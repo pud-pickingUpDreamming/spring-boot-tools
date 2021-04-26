@@ -1,0 +1,7 @@
+
+common:
+  enable: true
+  encrypt:
+    enable: true
+    secretKey: boss567890encode
+    encoding: UTF-8
