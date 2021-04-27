@@ -1,4 +1,4 @@
-package com.summer.tools.common.properties;
+package com.summer.tools.webservice.properties;
 
 import com.summer.tools.common.utils.AesUtil;
 import lombok.Getter;
@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 
 /**
  * Aes参数初始化配置
+ * web 适用与web项目
  */
 @Component
 @Getter

@@ -20,12 +20,16 @@
             <url>https://github.com/pud-pickingUpDreamming/spring-boot-tools.git</url>
         </developer>
     </developers>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <comments>Copyright (c) 2021 重拾梦想</comments>
+        </license>
+    </licenses>
     <description>Tools base on Spring Boot</description>
 
-
-
     <properties>
-        <version>0.0.1-SNAPSHOT</version>
+        <project.version>0.0.1-SNAPSHOT</project.version>
         <java.version>1.8</java.version>
         <druid.version>1.2.5</druid.version>
         <clickhouse.version>0.3.0</clickhouse.version>
@@ -33,6 +37,7 @@
         <mybatis-plus.version>3.4.1</mybatis-plus.version>
         <bcprov.version>1.67</bcprov.version>
         <codec.version>1.15</codec.version>
+        <cxf.starter.version>3.4.3</cxf.starter.version>
     </properties>
 
     <dependencyManagement>
@@ -48,6 +53,14 @@
                 <artifactId>commons-codec</artifactId>
                 <version>${codec.version}</version>
             </dependency>
+            <!-- webservice(soap) 工具包 -->
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+                <version>${cxf.starter.version}</version>
+            </dependency>
+
+
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
@@ -84,15 +97,17 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-    </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

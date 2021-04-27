@@ -1,4 +1,4 @@
-package com.summer.tools.common.properties;
+package com.summer.tools.webservice.properties;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "common")
-public class CommonProperties {
+@ConfigurationProperties(prefix = "webservices.client")
+public class WebserviceClientProperties {
     private Boolean enable;
+    private String uri;
 }

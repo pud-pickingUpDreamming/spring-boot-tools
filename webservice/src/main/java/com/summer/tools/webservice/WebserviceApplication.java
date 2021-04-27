@@ -1,12 +1,13 @@
-package com.summer.tools.common;
+package com.summer.tools.webservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CommonApplication {
+public class WebserviceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CommonApplication.class, args);
+        SpringApplication.run(WebserviceApplication.class, args);
     }
+
 }

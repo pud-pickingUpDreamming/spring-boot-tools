@@ -3,17 +3,12 @@ package com.summer.tools.common;
 import com.summer.tools.common.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 
 @Slf4j
-@SpringBootTest
 public class BaseToolsTest {
 
-    /**
-     * 可以通过修改application-dev.yml中的加密参数测试加密效果
-     */
     @Test
     public void aesUtilTest() {
         log.info(AesUtil.encrypt("123"));
