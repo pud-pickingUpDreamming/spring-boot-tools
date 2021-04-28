@@ -9,9 +9,7 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Node;
 
-import javax.xml.bind.Element;
 import javax.xml.namespace.QName;
 
 @Slf4j

@@ -1,4 +1,4 @@
-package com.summer.tools.webservice.properties;
+package com.summer.tools.common.properties;
 
 import com.summer.tools.common.utils.AesUtil;
 import lombok.Getter;
