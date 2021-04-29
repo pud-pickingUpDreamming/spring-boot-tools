@@ -1,11 +1,9 @@
-
-common:
-  encrypt:
-    enable: true
-    secretKey: boss567890encode
-    encoding: UTF-8
+logging:
+  config: classpath:logback.xml
 
 webservices:
-    client:
-      enable: false
+  enable: true
+  username: john
+  passwd: john
+  client:
       uri: http://localhost:81/services/IHelloService?wsdl

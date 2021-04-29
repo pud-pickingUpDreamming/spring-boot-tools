@@ -10,6 +10,10 @@
     <artifactId>webservice</artifactId>
     <description>soap api tools</description>
 
+    <properties>
+        <cxf.logging.version>3.4.3</cxf.logging.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.summer</groupId>
@@ -20,14 +24,11 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-features-logging</artifactId>
+            <version>${cxf.logging.version}</version>
+<!--            <scope>test</scope>-->
+        </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 </project>
