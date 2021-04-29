@@ -1,0 +1,36 @@
+logging:
+  config: classpath:logback.xml
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://1.15.132.121:7004/flowable?serverTimezone=Asia/Shanghai&&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+    username: root
+    password: 123456
+    druid:
+      max-active: 100
+      validation-query: select 1
+      stat-view-servlet:
+        login-username: admin
+        login-password: admin
+        url-pattern: /stat
+
+flowable:
+  async-executor-activate: false
+
+# mybatis 配置
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  typeAliasesPackage: com.summer.tools.flowable.orm.model
+  global-config:
+    id-type: 0
+    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    field-strategy: 2
+    #驼峰下划线转换
+    db-column-underline: true
+    #刷新mapper 调试神器
+    refresh-mapper: true
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false

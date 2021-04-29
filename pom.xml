@@ -42,6 +42,8 @@
         <mybatis-plus.version>3.4.1</mybatis-plus.version>
         <bcprov.version>1.67</bcprov.version>
         <cxf.starter.version>3.4.3</cxf.starter.version>
+        <mysql.connector.version>8.0.23</mysql.connector.version>
+        <flowable.version>6.6.0</flowable.version>
     </properties>
 
     <dependencyManagement>
@@ -58,13 +60,13 @@
                 <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
                 <version>${cxf.starter.version}</version>
             </dependency>
-
+            <!-- 数据库连接池 -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
             </dependency>
-
+            <!-- mybatis plus 依赖 -->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatisplus-spring-boot-starter</artifactId>
@@ -80,11 +82,23 @@
                 <artifactId>mybatis-plus-generator</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
-
+            <!-- clickhouse驱动 -->
             <dependency>
                 <groupId>ru.yandex.clickhouse</groupId>
                 <artifactId>clickhouse-jdbc</artifactId>
                 <version>${clickhouse.version}</version>
+            </dependency>
+            <!-- mysql驱动 -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.connector.version}</version>
+            </dependency>
+            <!-- 工作流 -->
+            <dependency>
+                <groupId>org.flowable</groupId>
+                <artifactId>flowable-spring-boot-starter</artifactId>
+                <version>${flowable.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
