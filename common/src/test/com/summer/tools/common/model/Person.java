@@ -1,4 +1,4 @@
-package com.summer.tools.common;
+package com.summer.tools.common.model;
 
 import lombok.Getter;
 import lombok.Setter;
