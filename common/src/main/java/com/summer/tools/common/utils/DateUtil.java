@@ -1,9 +1,6 @@
 package com.summer.tools.common.utils;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -14,11 +11,9 @@ import java.util.Locale;
 
 /**
  * 基于java8 的日期工具类
- * @author john
+ * @author john.wang
  */
 public class DateUtil {
-
-    private static final Logger logger = LoggerFactory.getLogger(DateUtil.class);
 
     public static final String YEAR_MONTH_DATE_HOUR_MINUTE_SECOND = "yyyy-MM-dd HH:mm:ss";
     public static final String YEAR_MONTH_DATE = "yyyy-MM-dd";
@@ -227,40 +222,5 @@ public class DateUtil {
      */
     public static LocalDateTime minus(LocalDateTime dateTime, long amountToAdd, ChronoUnit timeUnit) {
         return dateTime.minus(amountToAdd, timeUnit);
-    }
-
-
-
-    public static void main(String[] args) {
-//        System.out.println(format(LocalDateTime.now()));
-//        System.out.println(format(LocalDateTime.now(), YEAR_MONTH_DATE));
-//
-//        System.out.println(parse("2020-10-27 18:22:08"));
-//        System.out.println(parse("20201027 182208", "yyyyMMdd HHmmss"));
-//
-//        System.out.println(parseLocalDate("2020-10-27"));
-//        System.out.println(parseLocalDate("20201027", "yyyyMMdd"));
-//
-//        System.out.println(parseLocalTime("18:22:08"));
-//        System.out.println(parseLocalTime("182208", "HHmmss"));
-//
-//        System.out.println(toDate(LocalDateTime.now()));
-//        System.out.println(toDate(LocalDate.now()));
-//        System.out.println(toLocalDateTime(new Date()));
-
-//        System.out.println(startTimeOfDay());
-//        System.out.println(startDayOfMonth(2020, 10));
-//        System.out.println(startDayOfMonth());
-//        System.out.println(startDayOfYear());
-
-//        System.out.println(weekIndex());
-//        System.out.println(startDayOfWeek());
-//
-//        System.out.println(diff(LocalDateTime.now(), LocalDateTime.now().plusHours(3), ChronoUnit.SECONDS));
-
-        System.out.println(plus(LocalDateTime.now(), 3, ChronoUnit.SECONDS));
-        System.out.println(LocalDateTime.now());
-        System.out.println(minus(LocalDateTime.now(), 3, ChronoUnit.SECONDS));
-
     }
 }
