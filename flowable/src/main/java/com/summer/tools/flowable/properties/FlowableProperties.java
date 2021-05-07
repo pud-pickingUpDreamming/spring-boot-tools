@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "template")
-public class TemplateProperties {
+@ConfigurationProperties(prefix = "flowable")
+public class FlowableProperties {
     private Boolean enable;
 }

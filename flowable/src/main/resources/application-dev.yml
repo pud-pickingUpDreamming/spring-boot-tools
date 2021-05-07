@@ -18,6 +18,9 @@ spring:
 
 flowable:
   async-executor-activate: false
+  # 设为false项目启动的时候不会初始化表及数据
+  database-schema-update: true
+
 
 # mybatis 配置
 mybatis-plus:
