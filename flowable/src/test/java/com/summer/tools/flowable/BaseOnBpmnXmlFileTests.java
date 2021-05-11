@@ -22,7 +22,7 @@ import java.util.List;
 
 @Slf4j
 @SpringBootTest
-class FlowableApplicationTests {
+class BaseOnBpmnXmlFileTests {
 
     @Resource
     private RuntimeService runtimeService;
@@ -37,6 +37,8 @@ class FlowableApplicationTests {
 
     private static final Expense expense = Expense.getExpense();
 
+
+
     /**
      * 新建报销流程
      */
@@ -49,6 +51,16 @@ class FlowableApplicationTests {
         map.put("money", expense.getAmount());
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Expense", map);
         log.info("提交成功.流程Id为: [{}]", processInstance.getId());
+        // 提交表单任务
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+        if (task == null) {
+            throw new RuntimeException("流程不存在");
+        }
+
+        // 表单任务
+        taskService.complete(task.getId());
+        log.info("表单:{} 提交成功",task.getTaskDefinitionKey());
+
         return processInstance.getId();
     }
 
@@ -85,6 +97,7 @@ class FlowableApplicationTests {
         HashMap<String, Object> map = new HashMap<>();
         map.put("outcome", "通过");
         taskService.complete(task.getId(), map);
+        log.info(task.getTaskDefinitionKey());
         log.info("processed ok!");
     }
 
@@ -104,6 +117,7 @@ class FlowableApplicationTests {
         HashMap<String, Object> map = new HashMap<>();
         map.put("outcome", "驳回");
         taskService.complete(task.getId(), map);
+        log.info(task.getTaskDefinitionKey());
         log.info("reject");
     }
 
