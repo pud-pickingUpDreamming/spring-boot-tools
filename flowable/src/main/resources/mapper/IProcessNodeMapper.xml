@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.summer.tools.flowable.orm.dao.IProcessNodeMapper">
+    <resultMap id="BaseResultMap" type="com.summer.tools.flowable.orm.model.ProcessNode">
+        <result column="line_id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="type" property="type"/>
+        <result column="implementation_type" property="implementationType"/>
+        <result column="implementation" property="implementation"/>
+        <result column="assignee" property="assignee"/>
+        <result column="listeners" property="listeners"/>
+        <result column="lines" property="lines"/>
+        <result column="create_time" property="createTime"/>
+        <result column="creator" property="creator"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="updater" property="updater"/>
+    </resultMap>
+</mapper>

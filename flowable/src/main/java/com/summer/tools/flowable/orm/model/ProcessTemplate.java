@@ -11,32 +11,32 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class ProcessLine {
+public class ProcessTemplate {
 
-    /**
-     *  流程线条ID
-     */
-    private String id;
-    /**
-     *  流程线名称
-     */
-    private String name;
     /**
      *  流程模板ID
      */
     private String templateId;
+
     /**
-     *  原节点id
+     *  流程模板名称
      */
-    private String sourceRef;
+    private String name;
+
     /**
-     *  目标节点id
+     *  流程模板类型 1:审批流程
      */
-    private String targetRef;
+    private Integer type;
+
     /**
-     *  流转条件
+     *  流程描述
      */
-    private String conditionExpression;
+    private String description;
+
+    /**
+     *  流程xml内容
+     */
+    private String xmlData;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

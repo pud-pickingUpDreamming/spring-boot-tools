@@ -1,5 +1,8 @@
 package com.summer.tools.flowable.constants;
 
+import com.summer.tools.flowable.listeners.EndTaskListener;
+import com.summer.tools.flowable.listeners.ProcessStartListener;
+import com.summer.tools.flowable.listeners.StartTaskListener;
 import lombok.Getter;
 
 public interface ProcessConstants {
@@ -13,29 +16,28 @@ public interface ProcessConstants {
         EXCLUSIVE_GATEWAY(5),
         PARALLEL_GATEWAY(6);
 
-        private final int type;
+        private final int value;
 
-        ProcessNodeTypeEnum(Integer type){
-            this.type = type;
+        ProcessNodeTypeEnum(Integer value){
+            this.value = value;
         }
     }
 
     @Getter
     enum ProcessListenerTypeEnum implements ProcessConstants {
-        CREATE(1, "create"),
-        ASSIGNMENT(2, "assignment"),
-        COMPLETE(3, "complete"),
-        DELETE(4, "delete"),
-        START(5, "start"),
-        TAKE(6, "take"),
-        END(7, "end");
+        PROCESS_START(1, "processStart", ProcessStartListener.class),
+        TASK_START(2, "taskStart", StartTaskListener.class),
+        TASK_END(3, "taskEnd", EndTaskListener.class);
 
-        ProcessListenerTypeEnum(Integer value, String name) {
+        ProcessListenerTypeEnum(Integer value, String name, Class<?> listener) {
             this.value = value;
             this.name = name;
+            this.listener = listener;
         }
 
         private final int value;
         private final String name;
+        private final Class<?> listener;
+        private final String implementationType = "class";
     }
 }

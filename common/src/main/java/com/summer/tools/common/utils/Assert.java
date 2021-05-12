@@ -12,6 +12,12 @@ public class Assert {
         }
     }
 
+    public static void empty(Collection<?> collection) {
+        if (null != collection && collection.size() > 0) {
+            throw new ValidException(ValidException.ValidEnum.EMPTY);
+        }
+    }
+
     public static<T> void equals(T self, T another) {
 
         if (self == null) {
