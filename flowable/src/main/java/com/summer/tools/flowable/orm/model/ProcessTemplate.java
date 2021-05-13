@@ -1,21 +1,26 @@
 package com.summer.tools.flowable.orm.model;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-public class ProcessTemplate {
+public class ProcessTemplate extends Model<ProcessTemplate> {
 
     /**
      *  流程模板ID
      */
+    @TableId(value = "template_id", type = IdType.INPUT)
     private String templateId;
 
     /**
@@ -49,4 +54,9 @@ public class ProcessTemplate {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updater;
+
+    @Override
+    protected Serializable pkVal() {
+        return this.templateId;
+    }
 }

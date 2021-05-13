@@ -1,5 +1,8 @@
 package com.summer.tools.flowable.controller;
 
+import com.summer.tools.common.utils.ResponseResult;
+import com.summer.tools.flowable.orm.model.DeployModel;
+import com.summer.tools.flowable.service.IProcessTemplateService;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.engine.*;
 import org.flowable.engine.runtime.Execution;
@@ -7,6 +10,7 @@ import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.image.ProcessDiagramGenerator;
 import org.flowable.task.api.Task;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/expense")
+@RequestMapping(value = "/process")
 public class FlowableController {
 
     @Resource
@@ -31,19 +35,32 @@ public class FlowableController {
     private ProcessEngine processEngine;
     @Resource
     private HttpServletResponse httpServletResponse;
+    @Resource
+    private IProcessTemplateService templateService;
 
+    @PostMapping("/deployWithResource")
+    public ResponseResult<?> deploy(String processName, String resource) {
+        this.templateService.deploy(processName, resource);
+        return ResponseResult.SUCCESS;
+    }
+
+    @PostMapping("/deployWithBpmnModel")
+    public ResponseResult<?> deploy(DeployModel deployModel) {
+        this.templateService.deploy(deployModel);
+        return ResponseResult.SUCCESS;
+    }
 
     /**
      * 生成流程图
-     * @param processId 任务ID
+     * @param processId 流程实例ID
      */
     @GetMapping(value = "/processDiagram")
-    public void genProcessDiagram(String processId) throws Exception {
+    public ResponseResult<?> genProcessDiagram(String processId) throws Exception {
         ProcessInstance pi = runtimeService.createProcessInstanceQuery().processInstanceId(processId).singleResult();
 
         //流程走完的不显示图
         if (pi == null) {
-            return;
+            return ResponseResult.SUCCESS;
         }
         Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
         //使用流程实例ID，查询正在执行的执行对象表，返回流程实例对象
@@ -72,5 +89,6 @@ public class FlowableController {
                 out.write(buf, 0, length);
             }
         }
+        return ResponseResult.SUCCESS;
     }
 }

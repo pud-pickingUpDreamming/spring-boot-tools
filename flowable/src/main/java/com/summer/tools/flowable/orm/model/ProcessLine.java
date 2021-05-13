@@ -1,21 +1,28 @@
 package com.summer.tools.flowable.orm.model;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-public class ProcessLine {
+public class ProcessLine extends Model<ProcessLine> {
 
     /**
      *  流程线条ID
      */
+    @TableId(value = "id", type = IdType.INPUT)
     private String id;
     /**
      *  流程线名称
@@ -49,4 +56,9 @@ public class ProcessLine {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updater;
+
+    @Override
+    protected Serializable pkVal() {
+        return this.id;
+    }
 }

@@ -16,7 +16,7 @@ public class DeployModel {
     /**
      * 流程模板id
      */
-    private String processId;
+    private String templateId;
     private String processName;
     private List<ProcessNode> processNodes;
     private List<ProcessLine> processLines;

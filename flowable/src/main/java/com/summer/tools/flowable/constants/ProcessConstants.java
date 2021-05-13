@@ -8,6 +8,19 @@ import lombok.Getter;
 public interface ProcessConstants {
 
     @Getter
+    enum ProcessTypeEnum implements ProcessConstants{
+        APPROVE(1, "审批");
+
+        private final int value;
+        private final String name;
+
+        ProcessTypeEnum(Integer value, String name){
+            this.value = value;
+            this.name = name;
+        }
+    }
+
+    @Getter
     enum ProcessNodeTypeEnum implements ProcessConstants{
         START_NODE(1),
         END_NODE(2),

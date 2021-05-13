@@ -17,7 +17,7 @@ public class BaseOnModelProcessTest {
 
     @Test
     public void deploy() {
-        ProcessDefinition processDefinition = this.flowService.deploy("1","expense", "processes/expense.bpmn20.xml");
+        ProcessDefinition processDefinition = this.flowService.deploy("expense", "processes/expense.bpmn20.xml");
     }
 
     @Test
