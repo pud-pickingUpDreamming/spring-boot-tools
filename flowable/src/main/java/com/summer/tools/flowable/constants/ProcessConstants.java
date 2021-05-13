@@ -5,6 +5,10 @@ import com.summer.tools.flowable.listeners.ProcessStartListener;
 import com.summer.tools.flowable.listeners.StartTaskListener;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public interface ProcessConstants {
 
     @Getter
@@ -15,6 +19,21 @@ public interface ProcessConstants {
         private final String name;
 
         ProcessTypeEnum(Integer value, String name){
+            this.value = value;
+            this.name = name;
+        }
+    }
+
+    @Getter
+    enum ProcessElementTypeEnum implements ProcessConstants{
+        TEMPLATE("template", "模板"),
+        NODE("node", "节点"),
+        LINE("line", "连线");
+
+        private final String value;
+        private final String name;
+
+        ProcessElementTypeEnum(String value, String name){
             this.value = value;
             this.name = name;
         }
@@ -34,6 +53,10 @@ public interface ProcessConstants {
         ProcessNodeTypeEnum(Integer value){
             this.value = value;
         }
+
+        public static ProcessNodeTypeEnum getTypeEnum(Integer value) {
+            return Arrays.stream(ProcessNodeTypeEnum.values()).filter(f->f.value == value).findFirst().orElse(null);
+        }
     }
 
     @Getter
@@ -46,6 +69,16 @@ public interface ProcessConstants {
             this.value = value;
             this.name = name;
             this.listener = listener;
+        }
+
+        public static List<ProcessListenerTypeEnum> getTypeEnums(String[] names) {
+            List<ProcessListenerTypeEnum> typeEnums = new ArrayList<>();
+            Arrays.asList(ProcessListenerTypeEnum.values()).forEach(f -> {
+                if (Arrays.asList(names).contains(f.getName())) {
+                    typeEnums.add(f);
+                }
+            });
+            return typeEnums;
         }
 
         private final int value;

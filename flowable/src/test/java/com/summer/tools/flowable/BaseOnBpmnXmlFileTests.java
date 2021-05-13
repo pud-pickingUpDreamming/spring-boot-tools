@@ -1,9 +1,12 @@
 package com.summer.tools.flowable;
 
+import com.summer.tools.common.utils.JsonUtil;
 import com.summer.tools.flowable.model.Expense;
+import com.summer.tools.flowable.service.IProcessTemplateService;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.engine.*;
+import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.image.ProcessDiagramGenerator;
@@ -33,11 +36,17 @@ class BaseOnBpmnXmlFileTests {
     @Resource
     private ProcessEngine processEngine;
     @Resource
+    private IProcessTemplateService flowService;
+    @Resource
     private HttpServletResponse httpServletResponse;
 
     private static final Expense expense = Expense.getExpense();
 
-
+    @Test
+    public void deploy() {
+        ProcessDefinition processDefinition = this.flowService.deploy("expense", "processes/expense.bpmn20.xml");
+        log.info(JsonUtil.stringify(processDefinition));
+    }
 
     /**
      * 新建报销流程

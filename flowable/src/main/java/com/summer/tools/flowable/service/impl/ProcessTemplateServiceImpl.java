@@ -1,28 +1,40 @@
 package com.summer.tools.flowable.service.impl;
 
+import com.summer.tools.common.utils.Assert;
 import com.summer.tools.flowable.common.AbstractProcessManager;
+import com.summer.tools.flowable.common.IdGenerator;
 import com.summer.tools.flowable.constants.ProcessConstants;
 import com.summer.tools.flowable.orm.model.DeployModel;
 import com.summer.tools.flowable.orm.model.ProcessTemplate;
+import com.summer.tools.flowable.service.IProcessLineService;
+import com.summer.tools.flowable.service.IProcessNodeService;
 import com.summer.tools.flowable.service.IProcessTemplateService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.common.engine.impl.util.ReflectUtil;
 import org.flowable.engine.repository.ProcessDefinition;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.UUID;
 
 @Slf4j
 @Service
 public class ProcessTemplateServiceImpl extends AbstractProcessManager implements IProcessTemplateService {
 
+    @Resource
+    private IProcessNodeService nodeService;
+    @Resource
+    private IProcessLineService lineService;
+
     @Override
     public ProcessDefinition deploy(String processName, String resource) {
-        String templateId = UUID.randomUUID().toString();
+        String templateId = IdGenerator.generateId(ProcessConstants.ProcessElementTypeEnum.TEMPLATE);
         new ProcessTemplate().setTemplateId(templateId).setType(ProcessConstants.ProcessTypeEnum.APPROVE.getValue())
                 .setName(processName).setDescription(processName + PROCESS_POSTFIX)
                 .insert();
@@ -31,8 +43,24 @@ public class ProcessTemplateServiceImpl extends AbstractProcessManager implement
 
     @Override
     public ProcessDefinition deploy(DeployModel deployModel) {
+        // 校验参数表达式
+        boolean expression = StringUtils.isNoneBlank(deployModel.getProcessName())
+                && CollectionUtils.isEmpty(deployModel.getProcessLines())
+                && CollectionUtils.isEmpty(deployModel.getProcessNodes());
+        Assert.noBusinessExceptions(expression, HttpStatus.BAD_REQUEST);
 
+        String templateId = IdGenerator.generateId(ProcessConstants.ProcessElementTypeEnum.TEMPLATE);
+        new ProcessTemplate().setTemplateId(templateId).setType(ProcessConstants.ProcessTypeEnum.APPROVE.getValue())
+                .setName(deployModel.getProcessName()).setDescription(deployModel.getProcessName() + PROCESS_POSTFIX)
+                .insert();
+        deployModel.setTemplateId(templateId);
+        // 记录节点
+        this.nodeService.saveBatch(deployModel.getProcessNodes());
 
+        // 记录线条
+        this.lineService.saveBatch(deployModel.getProcessLines());
+
+        // 部署
         return super.deploy(deployModel);
     }
 

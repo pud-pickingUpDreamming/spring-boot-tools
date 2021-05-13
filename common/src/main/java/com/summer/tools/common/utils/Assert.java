@@ -1,6 +1,9 @@
 package com.summer.tools.common.utils;
 
+import com.summer.tools.common.enums.ResponseCodeEnum;
+import com.summer.tools.common.exceptions.BusinessException;
 import com.summer.tools.common.exceptions.ValidException;
+import org.springframework.http.HttpStatus;
 
 import java.util.Collection;
 
@@ -28,6 +31,18 @@ public class Assert {
             if (!self.equals(another)) {
                 throw new ValidException((ValidException.ValidEnum.EQUAL));
             }
+        }
+    }
+
+    public static void noBusinessExceptions(boolean expression, ResponseCodeEnum response) {
+        if (!expression) {
+            throw new BusinessException(response.getCode(), response.getMessage());
+        }
+    }
+
+    public static void noBusinessExceptions(boolean expression, HttpStatus response) {
+        if (!expression) {
+            throw new BusinessException(response.value(), response.getReasonPhrase());
         }
     }
 
