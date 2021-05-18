@@ -7,6 +7,7 @@
         <result column="type" property="type"/>
         <result column="description" property="description"/>
         <result column="xml_data" property="xmlData"/>
+        <result column="status" property="status"/>
         <result column="create_time" property="createTime"/>
         <result column="creator" property="creator"/>
         <result column="update_time" property="updateTime"/>

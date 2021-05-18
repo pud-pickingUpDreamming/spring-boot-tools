@@ -22,26 +22,26 @@ public class ProcessTemplate extends Model<ProcessTemplate> {
      */
     @TableId(value = "template_id", type = IdType.INPUT)
     private String templateId;
-
     /**
      *  流程模板名称
      */
     private String name;
-
     /**
      *  流程模板类型 1:审批流程
      */
     private Integer type;
-
     /**
      *  流程描述
      */
     private String description;
-
     /**
      *  流程xml内容
      */
     private String xmlData;
+    /**
+     *  流程模板状态 1: 草稿 2: 发布 3: 删除
+     */
+    private Integer status;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

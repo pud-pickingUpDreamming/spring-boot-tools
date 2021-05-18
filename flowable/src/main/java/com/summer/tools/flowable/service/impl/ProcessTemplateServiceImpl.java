@@ -4,6 +4,7 @@ import com.summer.tools.common.utils.Assert;
 import com.summer.tools.flowable.common.AbstractProcessManager;
 import com.summer.tools.flowable.common.IdGenerator;
 import com.summer.tools.flowable.constants.ProcessConstants;
+import com.summer.tools.flowable.constants.TemplateConstants;
 import com.summer.tools.flowable.orm.model.DeployModel;
 import com.summer.tools.flowable.orm.model.ProcessTemplate;
 import com.summer.tools.flowable.service.IProcessLineService;
@@ -34,8 +35,9 @@ public class ProcessTemplateServiceImpl extends AbstractProcessManager implement
 
     @Override
     public ProcessDefinition deploy(String processName, String resource) {
-        String templateId = IdGenerator.generateId(ProcessConstants.ProcessElementTypeEnum.TEMPLATE);
+        String templateId = IdGenerator.generateId(TemplateConstants.IdPrefixEnum.TEMPLATE);
         new ProcessTemplate().setTemplateId(templateId).setType(ProcessConstants.ProcessTypeEnum.APPROVE.getValue())
+                .setStatus(TemplateConstants.TemplateStatusEnum.DRAFT.getValue())
                 .setName(processName).setDescription(processName + PROCESS_POSTFIX)
                 .insert();
         return super.deploy(templateId, processName, resource);
@@ -49,8 +51,9 @@ public class ProcessTemplateServiceImpl extends AbstractProcessManager implement
                 && CollectionUtils.isEmpty(deployModel.getProcessNodes());
         Assert.noBusinessExceptions(expression, HttpStatus.BAD_REQUEST);
 
-        String templateId = IdGenerator.generateId(ProcessConstants.ProcessElementTypeEnum.TEMPLATE);
+        String templateId = IdGenerator.generateId(TemplateConstants.IdPrefixEnum.TEMPLATE);
         new ProcessTemplate().setTemplateId(templateId).setType(ProcessConstants.ProcessTypeEnum.APPROVE.getValue())
+                .setStatus(TemplateConstants.TemplateStatusEnum.DRAFT.getValue())
                 .setName(deployModel.getProcessName()).setDescription(deployModel.getProcessName() + PROCESS_POSTFIX)
                 .insert();
         deployModel.setTemplateId(templateId);

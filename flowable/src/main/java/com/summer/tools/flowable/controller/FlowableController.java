@@ -55,12 +55,12 @@ public class FlowableController {
      * @param processId 流程实例ID
      */
     @GetMapping(value = "/processDiagram")
-    public ResponseResult<?> genProcessDiagram(String processId) throws Exception {
+    public void genProcessDiagram(String processId) throws Exception {
         ProcessInstance pi = runtimeService.createProcessInstanceQuery().processInstanceId(processId).singleResult();
 
         //流程走完的不显示图
         if (pi == null) {
-            return ResponseResult.SUCCESS;
+            return;
         }
         Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
         //使用流程实例ID，查询正在执行的执行对象表，返回流程实例对象
@@ -89,6 +89,5 @@ public class FlowableController {
                 out.write(buf, 0, length);
             }
         }
-        return ResponseResult.SUCCESS;
     }
 }

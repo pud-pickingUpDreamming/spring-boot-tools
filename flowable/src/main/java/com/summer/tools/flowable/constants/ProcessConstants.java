@@ -25,33 +25,20 @@ public interface ProcessConstants {
     }
 
     @Getter
-    enum ProcessElementTypeEnum implements ProcessConstants{
-        TEMPLATE("template", "模板"),
-        NODE("node", "节点"),
-        LINE("line", "连线");
-
-        private final String value;
-        private final String name;
-
-        ProcessElementTypeEnum(String value, String name){
-            this.value = value;
-            this.name = name;
-        }
-    }
-
-    @Getter
     enum ProcessNodeTypeEnum implements ProcessConstants{
-        START_NODE(1),
-        END_NODE(2),
-        USER_TASK(3),
-        SERVICE_TASK(4),
-        EXCLUSIVE_GATEWAY(5),
-        PARALLEL_GATEWAY(6);
+        START_NODE(1, "start"),
+        END_NODE(2, "end"),
+        USER_TASK(3, "userTask"),
+        SERVICE_TASK(4, "serviceTask"),
+        EXCLUSIVE_GATEWAY(5, "exclusiveGateway"),
+        PARALLEL_GATEWAY(6, "parallelGateway");
 
         private final int value;
+        private final String name;
 
-        ProcessNodeTypeEnum(Integer value){
+        ProcessNodeTypeEnum(Integer value, String name){
             this.value = value;
+            this.name = name;
         }
 
         public static ProcessNodeTypeEnum getTypeEnum(Integer value) {

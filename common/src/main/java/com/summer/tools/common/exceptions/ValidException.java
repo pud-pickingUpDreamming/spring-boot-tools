@@ -18,7 +18,8 @@ public class ValidException extends RuntimeException{
     public enum ValidEnum{
         NOT_EMPTY(1, "data required"),
         EMPTY(2, "errs appear"),
-        EQUAL(3, "data not equal");
+        EQUAL(3, "data not equal"),
+        NOT_NULL(2, "object can not be null");
 
         ValidEnum(int code, String message) {
             this.code = code;

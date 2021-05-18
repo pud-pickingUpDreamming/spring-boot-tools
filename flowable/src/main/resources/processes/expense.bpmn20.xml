@@ -9,7 +9,8 @@
         <userTask id="fillTask" name="出差报销" flowable:assignee="${taskUser}">
             <extensionElements>
                 <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler">
-                    <![CDATA[false]]></modeler:initiator-can-complete>
+                    <![CDATA[false]]>
+                </modeler:initiator-can-complete>
             </extensionElements>
         </userTask>
         <exclusiveGateway id="judgeTask"/>

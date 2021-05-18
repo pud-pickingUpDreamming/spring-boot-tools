@@ -49,18 +49,32 @@ public class ProcessNode extends Model<ProcessNode> {
      *  处理人
      */
     private String assignee;
-
     /**
      * 全限定类名,多个用","分割
      * 任务节点监听器
      */
     private String listeners;
-
     /**
      * 线条id,关联线条,多条用","分割
      * 网关会对应多个线条
      */
     private String lines;
+    /**
+     * 节点高度
+     */
+    private Integer height;
+    /**
+     * 节点宽度
+     */
+    private Integer width;
+    /**
+     * x轴坐标
+     */
+    private Integer axisX;
+    /**
+     * y轴坐标
+     */
+    private Integer axisY;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

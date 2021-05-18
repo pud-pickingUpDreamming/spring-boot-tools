@@ -100,7 +100,7 @@
                 <artifactId>flowable-spring-boot-starter</artifactId>
                 <version>${flowable.version}</version>
             </dependency>
-            <!-- flowable 集成依赖 rest，logic，conf -->
+            <!-- flowable 流程设计器集成依赖 rest，logic，conf -->
             <dependency>
                 <groupId>org.flowable</groupId>
                 <artifactId>flowable-ui-modeler-rest</artifactId>

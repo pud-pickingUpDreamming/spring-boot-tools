@@ -21,6 +21,12 @@ public class Assert {
         }
     }
 
+    public static void notNull(Object obj) {
+        if (null == obj) {
+            throw new ValidException(ValidException.ValidEnum.NOT_NULL);
+        }
+    }
+
     public static<T> void equals(T self, T another) {
 
         if (self == null) {
