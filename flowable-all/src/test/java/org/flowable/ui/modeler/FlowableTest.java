@@ -1,6 +1,6 @@
-package com.summer.tools.flowable;
+package org.flowable.ui.modeler;
 
-import com.summer.tools.common.utils.Assert;
+//import org.flowable.bpmn.BpmnAutoLayout;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
@@ -11,6 +11,7 @@ import org.flowable.validation.ProcessValidatorFactory;
 import org.flowable.validation.ValidationError;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -38,13 +39,13 @@ public class FlowableTest {
         employeeTask.setCandidateUsers(Arrays.asList("john","jack"));
         employeeTask.setName("申请人任务-填写表单");
         // 员工任务监听事件
-//        List<FlowableListener> taskListeners = new ArrayList<>();
-//        FlowableListener listener = new FlowableListener();
-//        listener.setEvent("complete");
-//        listener.setImplementationType("delegateExpression");
-//        listener.setImplementation("${permissionTaskListener}");
-//        taskListeners.add(listener);
-//        employeeTask.setTaskListeners(taskListeners);
+        List<FlowableListener> taskListeners = new ArrayList<>();
+        FlowableListener listener = new FlowableListener();
+        listener.setEvent("complete");
+        listener.setImplementationType("delegateExpression");
+        listener.setImplementation("${permissionTaskListener}");
+        taskListeners.add(listener);
+        employeeTask.setTaskListeners(taskListeners);
         // 并行知会人事
         ParallelGateway fork = new ParallelGateway();
         fork.setId("fork_");
@@ -66,6 +67,9 @@ public class FlowableTest {
         bossTask.setCandidateUsers(Arrays.asList("john", "alis"));
         bossTask.setAssignee("john");
         bossTask.setName("老板审批");
+
+        ExclusiveGateway endGateway = new ExclusiveGateway();
+        endGateway.setId("end_gateway_");
 
         UserTask hrTask = new UserTask();
         hrTask.setId("hr_notify");
@@ -93,19 +97,20 @@ public class FlowableTest {
         toDirectorFlow.setConditionExpression("${money < 5000}");
         SequenceFlow toBossFlow = new SequenceFlow(costGateway.getId(), bossTask.getId());
         toBossFlow.setConditionExpression("${money >= 5000}");
-        SequenceFlow directorAgreeFlow = new SequenceFlow(directorTask.getId(), join.getId());
+        SequenceFlow directorAgreeFlow = new SequenceFlow(directorTask.getId(), endGateway.getId());
         directorAgreeFlow.setConditionExpression("${approve}");
         SequenceFlow directorDenyFlow = new SequenceFlow(directorTask.getId(), employeeTask.getId());
         directorDenyFlow.setConditionExpression("${!approve}");
-        SequenceFlow bossAgreeFlow = new SequenceFlow(bossTask.getId(), join.getId());
+        SequenceFlow bossAgreeFlow = new SequenceFlow(bossTask.getId(), endGateway.getId());
         bossAgreeFlow.setConditionExpression("${approve}");
         SequenceFlow bossDenyFlow = new SequenceFlow(bossTask.getId(), employeeTask.getId());
         bossDenyFlow.setConditionExpression("${!approve}");
+        SequenceFlow endGatewayToJoinFlow = new SequenceFlow(endGateway.getId(), join.getId());
         SequenceFlow toJoinFlow = new SequenceFlow(hrTask.getId(), join.getId());
         SequenceFlow toEndFlow = new SequenceFlow(join.getId(), endEvent.getId());
 
         // 构造流程
-        org.flowable.bpmn.model.Process process = new Process();
+        Process process = new Process();
         process.setId("ExpenseApprove");
         process.setName("报销审批流程");
         process.addFlowElement(startEvent);
@@ -114,6 +119,7 @@ public class FlowableTest {
         process.addFlowElement(costGateway);
         process.addFlowElement(directorTask);
         process.addFlowElement(bossTask);
+        process.addFlowElement(endGateway);
         process.addFlowElement(hrTask);
         process.addFlowElement(join);
         process.addFlowElement(endEvent);
@@ -127,17 +133,21 @@ public class FlowableTest {
         process.addFlowElement(directorDenyFlow);
         process.addFlowElement(bossAgreeFlow);
         process.addFlowElement(bossDenyFlow);
+        process.addFlowElement(endGatewayToJoinFlow);
         process.addFlowElement(toJoinFlow);
         process.addFlowElement(toEndFlow);
         BpmnModel bpmnModel = new BpmnModel();
         bpmnModel.addProcess(process);
-        new BpmnAutoLayout(bpmnModel).execute();
+        // 生成流程图
+//        new BpmnAutoLayout(bpmnModel).execute();
 
         // 验证模型数据格式
-//        ProcessValidatorFactory processValidatorFactory = new ProcessValidatorFactory();
-//        ProcessValidator defaultProcessValidator = processValidatorFactory.createDefaultProcessValidator();
-//        List<ValidationError> validate = defaultProcessValidator.validate(bpmnModel);
-//        Assert.empty(validate);
+        ProcessValidatorFactory processValidatorFactory = new ProcessValidatorFactory();
+        ProcessValidator defaultProcessValidator = processValidatorFactory.createDefaultProcessValidator();
+        List<ValidationError> validate = defaultProcessValidator.validate(bpmnModel);
+        if (!CollectionUtils.isEmpty(validate)) {
+            System.out.println("流程模型有问题");
+        }
 
         BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
         byte[] convertToXML = bpmnXMLConverter.convertToXML(bpmnModel);
@@ -146,4 +156,6 @@ public class FlowableTest {
         Deployment deploy = repositoryService.createDeployment().addString("报销审批流程.bpmn", xmlData).deploy();
         System.out.println("部署id :" + deploy.getId());
     }
+
+
 }

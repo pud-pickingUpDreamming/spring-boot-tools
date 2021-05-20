@@ -5,8 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import javax.xml.bind.annotation.*;
-import java.util.Arrays;
 import java.util.UUID;
 
 @Getter

@@ -1,11 +1,7 @@
-package com.summer.tools.flowable.model;
+package com.summer.tools.flowable;
 
 import com.summer.tools.flowable.constants.ProcessConstants;
 import lombok.experimental.Accessors;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Accessors
 public class MainTest {

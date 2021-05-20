@@ -1,0 +1,23 @@
+logging:
+  config: classpath:logback.xml
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://1.15.132.121:7004/flowable-all?serverTimezone=Asia/Shanghai&&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+    username: root
+    password: 123456
+    druid:
+      max-active: 100
+      validation-query: select 1
+      stat-view-servlet:
+        login-username: admin
+        login-password: admin
+        url-pattern: /stat
+
+flowable:
+  async-executor-activate: false
+  # 设为false项目启动的时候不会初始化表及数据
+  database-schema-update: true
+
