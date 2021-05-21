@@ -1,11 +1,18 @@
 package org.flowable.ui.modeler;
 
-//import org.flowable.bpmn.BpmnAutoLayout;
+import lombok.extern.slf4j.Slf4j;
+import org.flowable.bpmn.BpmnAutoLayout;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
+import org.flowable.engine.ProcessEngine;
 import org.flowable.engine.RepositoryService;
+import org.flowable.engine.RuntimeService;
+import org.flowable.engine.TaskService;
 import org.flowable.engine.repository.Deployment;
+import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.task.api.Task;
+import org.flowable.ui.modeler.listeners.PermissionTaskListener;
 import org.flowable.validation.ProcessValidator;
 import org.flowable.validation.ProcessValidatorFactory;
 import org.flowable.validation.ValidationError;
@@ -14,15 +21,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
+@Slf4j
 @SpringBootTest
 public class FlowableTest {
 
     @Resource
     private RepositoryService repositoryService;
+    @Resource
+    private RuntimeService runtimeService;
+    @Resource
+    private TaskService taskService;
+    @Resource
+    private ProcessEngine processEngine;
+    private static String PROCESS_INSTANCE_ID = "";
+    private static final int MONEY = 6000;
 
     @Test
     public void deploy() {
@@ -36,14 +50,14 @@ public class FlowableTest {
         employeeTask.setId("employee_work");
         employeeTask.setCategory("employee");
         employeeTask.setAssignee("${taskUser}");
-        employeeTask.setCandidateUsers(Arrays.asList("john","jack"));
+        employeeTask.setCandidateUsers(Arrays.asList("tom","tom1"));
         employeeTask.setName("申请人任务-填写表单");
         // 员工任务监听事件
         List<FlowableListener> taskListeners = new ArrayList<>();
         FlowableListener listener = new FlowableListener();
         listener.setEvent("complete");
-        listener.setImplementationType("delegateExpression");
-        listener.setImplementation("${permissionTaskListener}");
+        listener.setImplementationType("class");
+        listener.setImplementation(PermissionTaskListener.class.getName());
         taskListeners.add(listener);
         employeeTask.setTaskListeners(taskListeners);
         // 并行知会人事
@@ -57,15 +71,15 @@ public class FlowableTest {
         UserTask directorTask = new UserTask();
         directorTask.setId("direct_audit");
         directorTask.setCategory("director");
-        directorTask.setCandidateUsers(Arrays.asList("john","jack"));
-        directorTask.setAssignee("jack");
+        directorTask.setCandidateUsers(Arrays.asList("john","john1"));
+        directorTask.setAssignee("john");
         directorTask.setName("主管审批");
 
         UserTask bossTask = new UserTask();
         bossTask.setId("boss_audit");
         bossTask.setCategory("boss");
-        bossTask.setCandidateUsers(Arrays.asList("john", "alis"));
-        bossTask.setAssignee("john");
+        bossTask.setCandidateUsers(Arrays.asList("alis", "alis1"));
+        bossTask.setAssignee("alis");
         bossTask.setName("老板审批");
 
         ExclusiveGateway endGateway = new ExclusiveGateway();
@@ -74,9 +88,9 @@ public class FlowableTest {
         UserTask hrTask = new UserTask();
         hrTask.setId("hr_notify");
         hrTask.setCategory("hr");
-        hrTask.setCandidateUsers(Arrays.asList("john", "alis"));
-        hrTask.setAssignee("alis");
-        hrTask.setName("老板审批");
+        hrTask.setCandidateUsers(Arrays.asList("jack", "jack1"));
+        hrTask.setAssignee("jack");
+        hrTask.setName("知会人事");
 
         ParallelGateway join = new ParallelGateway();
         join.setId("join_");
@@ -157,5 +171,51 @@ public class FlowableTest {
         System.out.println("部署id :" + deploy.getId());
     }
 
+    /**
+     * 新建报销流程
+     */
+    @Test
+    public void startProcess() {
 
+        //启动流程
+        Map<String, Object> params = new HashMap<>();
+        params.put("taskUser", "tom");
+        params.put("money", MONEY);
+//        params.put("permissionTaskListener", PermissionTaskListener.class.getName());
+
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ExpenseApprove", params);
+        log.info("提交成功.流程Id为: [{}]", processInstance.getId());
+        // 提交表单任务
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+        if (task == null) {
+            throw new RuntimeException("流程不存在");
+        }
+
+        // 表单任务
+        taskService.complete(task.getId(), params);
+        log.info("表单:{} 提交成功", task.getTaskDefinitionKey());
+
+        PROCESS_INSTANCE_ID = processInstance.getId();
+    }
+
+    /**
+     * 通过审核
+     */
+    @Test
+    public void agree() {
+        // 添加报销流程,并获取流程id
+        startProcess();
+        String currentUser = MONEY > 5000 ? "alis" : "john";
+        Task task = taskService.createTaskQuery().processInstanceId(PROCESS_INSTANCE_ID).taskCandidateOrAssigned(currentUser).active().singleResult();
+
+        if (task == null) {
+            throw new RuntimeException("流程不存在");
+        }
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("approve", true);
+        taskService.complete(task.getId(), map);
+        log.info(task.getTaskDefinitionKey());
+        log.info("processed ok!");
+    }
 }

@@ -5,7 +5,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://1.15.132.121:7004/flowable-all?serverTimezone=Asia/Shanghai&&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+    url: jdbc:mysql://1.15.132.121:7004/flowable-offcial?serverTimezone=Asia/Shanghai&&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
     username: root
     password: 123456
     druid:
@@ -20,4 +20,10 @@ flowable:
   async-executor-activate: false
   # 设为false项目启动的时候不会初始化表及数据
   database-schema-update: true
+  common:
+    app:
+      idm-url: http://localhost:83/flowable-idm
+      idm-admin:
+        user: admin
+        password: 123456
 

@@ -17,13 +17,13 @@
         <userTask id="directorTak" name="经理审批">
             <extensionElements>
                 <flowable:taskListener event="create"
-                                       class="com.summer.tools.flowable.listeners.ManagerTaskHandler"/>
+                                       class="org.flowable.ui.modeler.listeners.ManagerTaskHandler"/>
             </extensionElements>
         </userTask>
         <userTask id="bossTask" name="老板审批">
             <extensionElements>
                 <flowable:taskListener event="create"
-                                       class="com.summer.tools.flowable.listeners.BossTaskHandler"/>
+                                       class="org.flowable.ui.modeler.listeners.BossTaskHandler"/>
             </extensionElements>
         </userTask>
         <endEvent id="end" name="结束"/>
