@@ -220,7 +220,7 @@ public abstract class AbstractProcessManager {
             FlowableListener listener = new FlowableListener();
             listener.setEvent(listenerType.getName());
             listener.setImplementationType(listenerType.getImplementationType());
-            listener.setImplementation(listenerType.getListener().getSimpleName());
+            listener.setImplementation(listenerType.getListener().getClass().getName());
             return listener;
         }
     }

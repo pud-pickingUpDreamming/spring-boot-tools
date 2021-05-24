@@ -1,7 +1,6 @@
 package org.flowable.ui.modeler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.flowable.bpmn.BpmnAutoLayout;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
@@ -12,7 +11,7 @@ import org.flowable.engine.TaskService;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
-import org.flowable.ui.modeler.listeners.PermissionTaskListener;
+import org.flowable.ui.modeler.listeners.CompleteTaskListener;
 import org.flowable.validation.ProcessValidator;
 import org.flowable.validation.ProcessValidatorFactory;
 import org.flowable.validation.ValidationError;
@@ -57,7 +56,7 @@ public class FlowableTest {
         FlowableListener listener = new FlowableListener();
         listener.setEvent("complete");
         listener.setImplementationType("class");
-        listener.setImplementation(PermissionTaskListener.class.getName());
+        listener.setImplementation(CompleteTaskListener.class.getName());
         taskListeners.add(listener);
         employeeTask.setTaskListeners(taskListeners);
         // 并行知会人事
@@ -67,6 +66,7 @@ public class FlowableTest {
         // 审批流程决策(排他网关),金额小于5000走主管审批,金额大于5000走老板审批
         ExclusiveGateway costGateway = new ExclusiveGateway();
         costGateway.setId("cost_");
+
         //主管审批任务节点
         UserTask directorTask = new UserTask();
         directorTask.setId("direct_audit");
@@ -81,9 +81,6 @@ public class FlowableTest {
         bossTask.setCandidateUsers(Arrays.asList("alis", "alis1"));
         bossTask.setAssignee("alis");
         bossTask.setName("老板审批");
-
-        ExclusiveGateway endGateway = new ExclusiveGateway();
-        endGateway.setId("end_gateway_");
 
         UserTask hrTask = new UserTask();
         hrTask.setId("hr_notify");
@@ -111,15 +108,14 @@ public class FlowableTest {
         toDirectorFlow.setConditionExpression("${money < 5000}");
         SequenceFlow toBossFlow = new SequenceFlow(costGateway.getId(), bossTask.getId());
         toBossFlow.setConditionExpression("${money >= 5000}");
-        SequenceFlow directorAgreeFlow = new SequenceFlow(directorTask.getId(), endGateway.getId());
+        SequenceFlow directorAgreeFlow = new SequenceFlow(directorTask.getId(), join.getId());
         directorAgreeFlow.setConditionExpression("${approve}");
         SequenceFlow directorDenyFlow = new SequenceFlow(directorTask.getId(), employeeTask.getId());
         directorDenyFlow.setConditionExpression("${!approve}");
-        SequenceFlow bossAgreeFlow = new SequenceFlow(bossTask.getId(), endGateway.getId());
+        SequenceFlow bossAgreeFlow = new SequenceFlow(bossTask.getId(), join.getId());
         bossAgreeFlow.setConditionExpression("${approve}");
         SequenceFlow bossDenyFlow = new SequenceFlow(bossTask.getId(), employeeTask.getId());
         bossDenyFlow.setConditionExpression("${!approve}");
-        SequenceFlow endGatewayToJoinFlow = new SequenceFlow(endGateway.getId(), join.getId());
         SequenceFlow toJoinFlow = new SequenceFlow(hrTask.getId(), join.getId());
         SequenceFlow toEndFlow = new SequenceFlow(join.getId(), endEvent.getId());
 
@@ -133,7 +129,6 @@ public class FlowableTest {
         process.addFlowElement(costGateway);
         process.addFlowElement(directorTask);
         process.addFlowElement(bossTask);
-        process.addFlowElement(endGateway);
         process.addFlowElement(hrTask);
         process.addFlowElement(join);
         process.addFlowElement(endEvent);
@@ -147,7 +142,6 @@ public class FlowableTest {
         process.addFlowElement(directorDenyFlow);
         process.addFlowElement(bossAgreeFlow);
         process.addFlowElement(bossDenyFlow);
-        process.addFlowElement(endGatewayToJoinFlow);
         process.addFlowElement(toJoinFlow);
         process.addFlowElement(toEndFlow);
         BpmnModel bpmnModel = new BpmnModel();
@@ -160,7 +154,7 @@ public class FlowableTest {
         ProcessValidator defaultProcessValidator = processValidatorFactory.createDefaultProcessValidator();
         List<ValidationError> validate = defaultProcessValidator.validate(bpmnModel);
         if (!CollectionUtils.isEmpty(validate)) {
-            System.out.println("流程模型有问题");
+            System.out.println("流程模型有问题:" + validate.get(0).getDefaultDescription());
         }
 
         BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
@@ -181,7 +175,6 @@ public class FlowableTest {
         Map<String, Object> params = new HashMap<>();
         params.put("taskUser", "tom");
         params.put("money", MONEY);
-//        params.put("permissionTaskListener", PermissionTaskListener.class.getName());
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ExpenseApprove", params);
         log.info("提交成功.流程Id为: [{}]", processInstance.getId());
@@ -204,7 +197,8 @@ public class FlowableTest {
     @Test
     public void agree() {
         // 添加报销流程,并获取流程id
-        startProcess();
+//        startProcess();
+        PROCESS_INSTANCE_ID = "2aea3881-bc84-11eb-ba19-f85971bf9de7";
         String currentUser = MONEY > 5000 ? "alis" : "john";
         Task task = taskService.createTaskQuery().processInstanceId(PROCESS_INSTANCE_ID).taskCandidateOrAssigned(currentUser).active().singleResult();
 

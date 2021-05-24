@@ -17,7 +17,7 @@ public class MainTest {
 //            System.out.println(f);
 //        });
 
-        System.out.println(ProcessConstants.ProcessListenerTypeEnum.PROCESS_START.getListener());
+        System.out.println(ProcessConstants.ProcessListenerTypeEnum.TASK_COMPLETE.getListener().getClass().getName());
 
     }
 }

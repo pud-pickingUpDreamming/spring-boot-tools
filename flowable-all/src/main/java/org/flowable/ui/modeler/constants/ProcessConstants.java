@@ -1,7 +1,6 @@
-package com.summer.tools.flowable.constants;
-
-import com.summer.tools.flowable.listeners.*;
+package org.flowable.ui.modeler.constants;
 import lombok.Getter;
+import org.flowable.ui.modeler.listeners.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,19 +8,9 @@ import java.util.List;
 
 public interface ProcessConstants {
 
-    @Getter
-    enum ProcessTypeEnum implements ProcessConstants{
-        APPROVE(1, "审批");
-
-        private final int value;
-        private final String name;
-
-        ProcessTypeEnum(Integer value, String name){
-            this.value = value;
-            this.name = name;
-        }
-    }
-
+    /**
+     * 流程节点类型
+     */
     @Getter
     enum ProcessNodeTypeEnum implements ProcessConstants{
         START_NODE(1, "start"),

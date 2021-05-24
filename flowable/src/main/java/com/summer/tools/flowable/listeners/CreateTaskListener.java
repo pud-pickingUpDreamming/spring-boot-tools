@@ -1,13 +1,12 @@
 package com.summer.tools.flowable.listeners;
 
-import org.flowable.engine.delegate.TaskListener;
+import lombok.extern.slf4j.Slf4j;
 import org.flowable.task.service.delegate.DelegateTask;
 
-public class ManagerTaskHandler implements TaskListener {
+@Slf4j
+public class CreateTaskListener implements IElementListener {
 
     @Override
     public void notify(DelegateTask delegateTask) {
-        delegateTask.setAssignee("经理");
     }
-
 }
