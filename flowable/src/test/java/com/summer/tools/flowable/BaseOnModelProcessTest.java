@@ -48,8 +48,8 @@ public class BaseOnModelProcessTest extends AbstractControllerTest {
                     .setTemplateId(templateId).setType(type.getValue())
                     .setHeight(10).setWidth(10).setAxisX(10*index).setAxisY(10*index);
             if (type.equals(ProcessConstants.ProcessNodeTypeEnum.USER_TASK)) {
-                String listeners = ProcessConstants.ProcessListenerTypeEnum.TASK_CREATE.getName()
-                        + "," + ProcessConstants.ProcessListenerTypeEnum.TASK_COMPLETE.getName();
+                String listeners = ProcessConstants.ProcessListenerTypeEnum.TASK_CREATE.getType()
+                        + "," + ProcessConstants.ProcessListenerTypeEnum.TASK_COMPLETE.getType();
                 node.setListeners(listeners);
             }
             return node;

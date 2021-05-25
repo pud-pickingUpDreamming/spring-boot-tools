@@ -218,7 +218,7 @@ public abstract class AbstractProcessManager {
 
         static FlowableListener listener(ProcessConstants.ProcessListenerTypeEnum listenerType) {
             FlowableListener listener = new FlowableListener();
-            listener.setEvent(listenerType.getName());
+            listener.setEvent(listenerType.getType());
             listener.setImplementationType(listenerType.getImplementationType());
             listener.setImplementation(listenerType.getListener().getClass().getName());
             return listener;

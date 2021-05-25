@@ -2,10 +2,10 @@ package org.flowable.ui.modeler.controller;
 
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.engine.*;
+import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.image.ProcessDiagramGenerator;
-import org.flowable.task.api.Task;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,33 +24,29 @@ public class FlowableController {
     @Resource
     private RuntimeService runtimeService;
     @Resource
-    private TaskService taskService;
+    private HistoryService historyService;
     @Resource
     private RepositoryService repositoryService;
     @Resource
     private ProcessEngine processEngine;
     @Resource
     private HttpServletResponse httpServletResponse;
-    private static final int MONEY = 6000;
+
     /**
-     * 生成流程图
+     * 生成流程图,
      * @param processId 流程实例ID
      */
     @GetMapping(value = "/processDiagram")
     public void genProcessDiagram(String processId) throws Exception {
+        // 查询历史流程实例
+        HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processId).singleResult();
+        // 查询当前流程实列
         ProcessInstance pi = runtimeService.createProcessInstanceQuery().processInstanceId(processId).singleResult();
 
-        //流程走完的不显示图
-        if (pi == null) {
-            return;
-        }
-        String currentUser = MONEY > 5000 ? "alis" : "john";
-        Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskCandidateOrAssigned(currentUser).singleResult();
         //使用流程实例ID，查询正在执行的执行对象表，返回流程实例对象
-        String InstanceId = task.getProcessInstanceId();
         List<Execution> executions = runtimeService
                 .createExecutionQuery()
-                .processInstanceId(InstanceId)
+                .processInstanceId(processId)
                 .list();
 
         //得到正在执行的Activity的Id
@@ -61,8 +57,9 @@ public class FlowableController {
             activityIds.addAll(ids);
         }
 
-        //获取流程图
-        BpmnModel bpmnModel = repositoryService.getBpmnModel(pi.getProcessDefinitionId());
+        //获取流程图, 流程执行中高亮显示正在执行的节点,流程执行完了显示完整流程图
+        String processDefinitionId = pi != null ? pi.getProcessDefinitionId() : historicProcessInstance.getProcessDefinitionId();
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
         ProcessEngineConfiguration engConf = processEngine.getProcessEngineConfiguration();
         ProcessDiagramGenerator diagramGenerator = engConf.getProcessDiagramGenerator();
         byte[] buf = new byte[1024];

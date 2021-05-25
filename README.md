@@ -37,3 +37,15 @@
 - 实现cxf客户端拦截器(可以添加接口认证信息)
 - 实现cxf服务端认证拦截器和日志拦截器
 - 结合logback 优雅的把日志输出到文件
+
+## flowable-all模块
+功能点:
+- 自动部署bpmn.xml流程
+    - 通过流程绘制软件(后面会写blog介绍)把绘制好的流程图导出bpmn.xml格式流程文件
+    - 把流程文件拷贝到resources/processes目录下即可,对应测试类:BaseOnBpmnXmlFileTests
+- 基于bpmnModel实现流程部署
+    - 排他网关案例(FlowableTest.deployExcludeGatewayFlow)
+    - 并行网关案例(FlowableTest.deployParallelGatewayFlow)
+    - 测试类:FlowableTest
+- 流程图查看(FlowableController.genProcessDiagram 运行中的正在执行的节点会高亮显示,运行结束的流程也可以查看,要通过rest请求查看)
+- 任务监听器、变量、网关等流程基本要素使用及流程图乱码问题解决

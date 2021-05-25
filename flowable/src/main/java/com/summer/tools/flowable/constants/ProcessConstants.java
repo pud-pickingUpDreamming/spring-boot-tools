@@ -54,17 +54,17 @@ public interface ProcessConstants {
         TASK_COMPLETE(6, "complete","task", new CompleteTaskListener()),
         TASK_DELETE(7, "delete","task", new DeleteTaskListener());
 
-        ProcessListenerTypeEnum(Integer value, String name, String type, IElementListener listener) {
+        ProcessListenerTypeEnum(Integer value, String type, String scope, IElementListener listener) {
             this.value = value;
-            this.name = name;
             this.type = type;
+            this.scope = scope;
             this.listener = listener;
         }
 
         public static List<ProcessListenerTypeEnum> getTypeEnums(String[] names) {
             List<ProcessListenerTypeEnum> typeEnums = new ArrayList<>();
             Arrays.asList(ProcessListenerTypeEnum.values()).forEach(f -> {
-                if (Arrays.asList(names).contains(f.getName())) {
+                if (Arrays.asList(names).contains(f.getType())) {
                     typeEnums.add(f);
                 }
             });
@@ -72,8 +72,8 @@ public interface ProcessConstants {
         }
 
         private final int value;
-        private final String name;
         private final String type;
+        private final String scope;
         private final IElementListener listener;
         private final String implementationType = "class";
     }
