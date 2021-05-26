@@ -39,6 +39,7 @@
 - 结合logback 优雅的把日志输出到文件
 
 ## flowable-all模块
+完全基于flowable原生模块的流程测试
 功能点:
 - 自动部署bpmn.xml流程
     - 通过流程绘制软件(后面会写blog介绍)把绘制好的流程图导出bpmn.xml格式流程文件

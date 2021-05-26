@@ -1,5 +1,6 @@
 package com.summer.tools.flowable.common;
 
+import com.summer.tools.common.enums.ResponseCodeEnum;
 import com.summer.tools.common.utils.Assert;
 import com.summer.tools.common.utils.BeanUtil;
 import com.summer.tools.flowable.constants.ProcessConstants;
@@ -69,7 +70,7 @@ public abstract class AbstractProcessManager {
         // 2. 校验模型
         ProcessValidator processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
         List<ValidationError> validationErrorList = processValidator.validate(bpmnModel);
-        Assert.empty(validationErrorList);
+        Assert.empty(validationErrorList, ResponseCodeEnum.BAD_MODEL);
 
         // 3. 部署流程
         Deployment deployment = this.repositoryService.createDeployment()

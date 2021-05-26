@@ -46,10 +46,10 @@ public class ProcessTemplateServiceImpl extends AbstractProcessManager implement
     @Override
     public ProcessDefinition deploy(DeployModel deployModel) {
         // 校验参数表达式
-        boolean expression = StringUtils.isNoneBlank(deployModel.getProcessName())
+        boolean validationExpression = StringUtils.isNoneBlank(deployModel.getProcessName())
                 && CollectionUtils.isEmpty(deployModel.getProcessLines())
                 && CollectionUtils.isEmpty(deployModel.getProcessNodes());
-        Assert.noBusinessExceptions(expression, HttpStatus.BAD_REQUEST);
+        Assert.isTrue(validationExpression, HttpStatus.BAD_REQUEST);
 
         String templateId = IdGenerator.generateId(TemplateConstants.IdPrefixEnum.TEMPLATE);
         new ProcessTemplate().setTemplateId(templateId).setType(ProcessConstants.ProcessTypeEnum.APPROVE.getValue())

@@ -1,6 +1,7 @@
 package com.summer.tools.common.utils;
 
-import com.summer.tools.common.exceptions.SystemException;
+import com.summer.tools.common.enums.ResponseCodeEnum;
+import com.summer.tools.common.exceptions.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ public class XmlUtil {
             return writer.toString();
         } catch (JAXBException | SecurityException | IOException e) {
             logger.error("对象转xml异常:", e);
-            throw new SystemException(500,e);
+            throw new BusinessException(ResponseCodeEnum.SYSTEM_ERROR);
         }
     }
 
@@ -37,7 +38,7 @@ public class XmlUtil {
 
         } catch (JAXBException | SecurityException e) {
             logger.error("xml转对象异常:", e);
-            throw new SystemException(500,e);
+            throw new BusinessException(ResponseCodeEnum.SYSTEM_ERROR);
         }
     }
 

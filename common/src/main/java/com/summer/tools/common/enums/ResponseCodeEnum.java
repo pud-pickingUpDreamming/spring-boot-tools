@@ -7,7 +7,7 @@ import lombok.Getter;
  */
 @Getter
 public enum ResponseCodeEnum {
-
+    // 通用返回code
     /**
      * 系统内部异常
      */
@@ -19,7 +19,10 @@ public enum ResponseCodeEnum {
     /**
      * token错误
      */
-    TOKEN_ERROR(600, "token error");
+    TOKEN_ERROR(600, "token error"),
+
+    // 自定义业务返回code
+    BAD_MODEL(400, "model check failed");
 
     ResponseCodeEnum(Integer  code, String message) {
         this.code = code;

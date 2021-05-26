@@ -44,6 +44,8 @@
         <cxf.starter.version>3.4.3</cxf.starter.version>
         <mysql.connector.version>8.0.23</mysql.connector.version>
         <flowable.version>6.6.0</flowable.version>
+        <knife4j.version>2.0.8</knife4j.version>
+        <azure.version>1.2.8</azure.version>
     </properties>
 
     <dependencyManagement>
@@ -115,6 +117,18 @@
                 <groupId>org.flowable</groupId>
                 <artifactId>flowable-ui-modeler-conf</artifactId>
                 <version>${flowable.version}</version>
+            </dependency>
+            <!-- swagger 接口文档依赖 -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+            <!-- Azure存储 -->
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-starter-azure-storage</artifactId>
+                <version>${azure.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

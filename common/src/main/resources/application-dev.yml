@@ -6,3 +6,12 @@ common:
     enable: true
     secretKey: boss567890encode
     encoding: UTF-8
+
+  cloud-storage:
+      accountName: johnwang
+      accountKey: WNY2QHkO402bYT119D6JFyfGNdtRfmgVpfafPkYX7oAn+0pz8cfMIzoEpDio/LBYxJgAnnXY7N0fXJ4x6fEGsw==
+      endPoint: core.windows.net
+      protocol: https
+      containerName: test
+      baseUrl: https://johnwang.blob.core.windows.net/test
+      type:  azure # azure 微软云
