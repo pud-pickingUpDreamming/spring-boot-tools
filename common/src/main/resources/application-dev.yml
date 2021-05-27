@@ -1,6 +1,7 @@
 logging:
   config: classpath:logback.xml
 
+
 common:
   encrypt:
     enable: true
@@ -15,3 +16,23 @@ common:
       containerName: test
       baseUrl: https://johnwang.blob.core.windows.net/test
       type:  azure # azure 微软云
+
+  swagger:
+    basePackage: com.summer.tools
+    description: 项目接口文档url (http://localhost[:port]/doc.html)
+    globalParams:
+      - name: token
+        paramType: header
+        javaType: string
+        description: 支持 jwt token
+      - name: requestId
+        paramType: header
+        javaType: string
+        description: 请求唯一标识
+
+knife4j:
+  enable: true
+  basic:
+    username: admin
+    password: test
+    enable: true
