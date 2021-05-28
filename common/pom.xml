@@ -43,6 +43,11 @@
             <artifactId>spring-starter-azure-storage</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

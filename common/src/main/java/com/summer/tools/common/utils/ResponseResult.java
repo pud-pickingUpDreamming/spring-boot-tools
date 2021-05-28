@@ -45,16 +45,16 @@ public class ResponseResult<T> {
         this.data = data;
     }
 
-    public static <T> ResponseResult<T> failure(HttpStatus httpStatus, T message){
-        return new ResponseResult<>(httpStatus, message);
+    public static <T> ResponseResult<T> failure(HttpStatus httpStatus, T data){
+        return new ResponseResult<>(httpStatus, data);
     }
 
-    public static <T> ResponseResult<T> failure(ResponseCodeEnum responseCodeEnum, T message){
-        return new ResponseResult<>(responseCodeEnum, message);
+    public static <T> ResponseResult<T> failure(ResponseCodeEnum responseCodeEnum, T data){
+        return new ResponseResult<>(responseCodeEnum, data);
     }
 
-    public static <T> ResponseResult<T> success(T result){
-    	return new ResponseResult<>(HttpStatus.OK, result);
+    public static <T> ResponseResult<T> success(T data){
+    	return new ResponseResult<>(HttpStatus.OK, data);
     }
 
     public static <T> ResponseResult<Page<T>> success(Integer total, List<T> data){

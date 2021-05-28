@@ -33,7 +33,7 @@ public class CloudStorageTest {
             // 获得StorageAccount对象
             String format = "DefaultEndpointsProtocol={0};AccountName={1};AccountKey={2};EndpointSuffix={3}";
             CloudStorageAccount storageAccount =
-                    CloudStorageAccount.parse(MessageFormat.format(format, "https", "johnwang", "WNY2QHkO402bYT119D6JFyfGNdtRfmgVpfafPkYX7oAn+0pz8cfMIzoEpDio/LBYxJgAnnXY7N0fXJ4x6fEGsw==","core.windows.net"));
+                    CloudStorageAccount.parse(MessageFormat.format(format, "https", "johnwang", "","core.windows.net"));
             // 由StorageAccount对象创建BlobClient
             CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
             // 根据传入的containerName, 获得container实例

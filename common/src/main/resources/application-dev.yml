@@ -7,15 +7,21 @@ common:
     enable: true
     secretKey: boss567890encode
     encoding: UTF-8
+  ftp:
+    host: ""
+    port: 22
+    user: root
+    password: ""
+    secure: true
 
   cloud-storage:
       accountName: johnwang
-      accountKey: WNY2QHkO402bYT119D6JFyfGNdtRfmgVpfafPkYX7oAn+0pz8cfMIzoEpDio/LBYxJgAnnXY7N0fXJ4x6fEGsw==
+      accountKey:
       endPoint: core.windows.net
       protocol: https
       containerName: test
       baseUrl: https://johnwang.blob.core.windows.net/test
-      type:  azure # azure 微软云
+      type:  #azure # azure 微软云
 
   swagger:
     basePackage: com.summer.tools

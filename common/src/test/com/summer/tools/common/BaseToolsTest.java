@@ -108,4 +108,32 @@ public class BaseToolsTest {
         System.out.println(source);
         System.out.println(target);
     }
+
+    @Test
+    public void ftpUploadTest() {
+        String serverPath = "/root/temp";
+        File clientFile = new File("D:\\data\\flowable\\approve.bpmn20.xml");
+        FtpUtil.upload(serverPath,clientFile);
+    }
+
+    @Test
+    public void ftpDownloadTest() {
+        String serverFile = "/root/temp/server.conf";
+        File clientPath = new File("D:\\data\\flowable");
+        FtpUtil.download(serverFile,clientPath);
+    }
+
+    @Test
+    public void sftpUploadTest() {
+        String serverPath = "/root/temp/";
+        File clientFile = new File("D:\\data\\flowable\\approve.bpmn20.xml");
+        SFtpUtil.upload(serverPath,clientFile);
+    }
+
+    @Test
+    public void sftpDownloadTest() {
+        String serverFile = "/root/temp/server.conf";
+        File clientPath = new File("D:\\data\\flowable\\");
+        SFtpUtil.download(serverFile,clientPath);
+    }
 }
