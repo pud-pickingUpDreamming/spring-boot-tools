@@ -75,5 +75,5 @@ public class FtpUtil {
     public static String HOST = "175.24.121.139";
     public static Integer PORT = 22;
     public static String USER = "root";
-    public static String PASSWORD = "johnWANG123456";
+    public static String PASSWORD = "";
 }
