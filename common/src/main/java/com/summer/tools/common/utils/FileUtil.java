@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.activation.MimetypesFileTypeMap;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,18 +14,27 @@ public class FileUtil {
     private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
     public static String readFileToString(File file, String encoding) {
+        try(InputStream stream = new FileInputStream(file)) {
+            return streamToSting(stream, encoding);
+        } catch (IOException ex) {
+            logger.error("读取文件失败:", ex);
+            return null;
+        }
+    }
 
-        try (FileInputStream fileInputStream = new FileInputStream(file); ByteArrayOutputStream outputStream=new ByteArrayOutputStream()) {
+    public static String streamToSting(InputStream inputStream, String encoding) {
+
+        try (ByteArrayOutputStream outputStream=new ByteArrayOutputStream()) {
             byte[] buffer=new byte[1024];
             int len;
 
-            while((len=fileInputStream.read(buffer))!=-1){
+            while((len=inputStream.read(buffer))!=-1){
                 outputStream.write(buffer, 0, len);
             }
 
             return new String(buffer, encoding);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            logger.error("数据流转字符串失败:", ex);
             return null;
         }
     }
