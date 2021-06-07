@@ -48,6 +48,15 @@ public class DateUtil {
     }
 
     /**
+     * 根据
+     * @param second 秒
+     * @return 日期时间
+     */
+    public static LocalDateTime parse(long second) {
+        return LocalDateTime.ofEpochSecond(second, 0, ZoneOffset.ofHours(8));
+    }
+
+    /**
      * 用指定格式把日期时间字符串转换成日期时间
      * @param dateTimeStr 日期时间字符串
      * @param formatStr 格式化字符串

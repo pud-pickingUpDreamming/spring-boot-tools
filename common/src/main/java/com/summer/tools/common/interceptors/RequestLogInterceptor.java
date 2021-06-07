@@ -1,9 +1,13 @@
 package com.summer.tools.common.interceptors;
 
 import com.summer.tools.common.annotations.BackendOperation;
+import com.summer.tools.common.constants.CommonConstants;
 import com.summer.tools.common.model.OperationLog;
 import com.summer.tools.common.services.IOperationLogService;
+import com.summer.tools.common.utils.DateUtil;
+import com.summer.tools.common.utils.IPUtil;
 import com.summer.tools.common.utils.JsonUtil;
+import com.summer.tools.common.utils.LocationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -16,6 +20,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author john.wang
@@ -43,7 +49,7 @@ public class RequestLogInterceptor {
      * 日志模板,统一了方便ELK处理
      * 5个占位符分别代表 请求唯一标识,请求入参,请求结果,请求耗时
      */
-    private static final String LOG_FORMAT = "key:{},requestArgs:{},response:{},cost:{}";
+    private static final String LOG_FORMAT = "key:{},requestArgs:{},response:{},ip:{},location{},cost:{}";
 
     @Pointcut("!@annotation(com.summer.tools.common.annotations.BackendOperation) " +
             "&& execution(public * com.summer.tools.*.controller..*Controller.*(..))")
@@ -64,7 +70,9 @@ public class RequestLogInterceptor {
         } finally {
             String cost = getCostTime(startTime);
             String response = JsonUtil.stringify(result);
-            log.info(LOG_FORMAT, request.getHeader(REQUEST_KEY), requestArgs, response, cost);
+            String ip = IPUtil.getIpAddr(request);
+            String location = LocationUtil.getLocationByIP(ip);
+            log.info(LOG_FORMAT, request.getHeader(REQUEST_KEY), requestArgs, response, ip, location, cost);
         }
         return result;
     }
@@ -86,12 +94,19 @@ public class RequestLogInterceptor {
             operationLog.setRequestArgs(requestArgs)
                     .setModule(operation.module()).setFunction(operation.function());
 
+            String ip = IPUtil.getIpAddr(request);
+            String location = LocationUtil.getLocationByIP(ip);
+            operationLog.setIpAddr(ip).setLocation(location)
+                    .setUserName(request.getHeader(CommonConstants.CURRENT_USER_NAME))
+                    .setUserId(request.getHeader(CommonConstants.CURRENT_USER_ID));
+
             result = pjp.proceed();
         } finally {
             String cost = getCostTime(startTime);
             String response = JsonUtil.stringify(result);
 
-            operationLog.setResponse(response).setCost(cost);
+            operationLog.setResponse(response).setCost(cost)
+                    .setCreateTime(DateTimeFormatter.ofPattern(DateUtil.YEAR_MONTH_DATE_HOUR_MINUTE_SECOND).format(LocalDateTime.now()));
             this.operationLogService.saveLog(operationLog);
             log.info(JsonUtil.stringify(operationLog));
         }

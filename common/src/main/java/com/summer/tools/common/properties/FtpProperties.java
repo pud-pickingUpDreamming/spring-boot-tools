@@ -24,7 +24,7 @@ public class FtpProperties {
     private boolean secure;
 
     @PostConstruct
-    public void initAesConfig() {
+    public void initFtpConfig() {
         if (this.secure) {
             SFtpUtil.HOST = StringUtils.isBlank(this.host) ? FtpUtil.HOST : this.host;
             SFtpUtil.PORT = port == null ? FtpUtil.PORT : port;

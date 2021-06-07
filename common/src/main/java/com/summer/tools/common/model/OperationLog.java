@@ -17,5 +17,5 @@ public class OperationLog {
     private String userName;
     private String ipAddr;
     private String location;
-    private String time;
+    private String createTime;
 }

@@ -15,13 +15,18 @@ common:
     secure: true
 
   cloud-storage:
-      accountName: johnwang
-      accountKey:
-      endPoint: core.windows.net
-      protocol: https
-      containerName: test
-      baseUrl: https://johnwang.blob.core.windows.net/test
-      type:  #azure # azure 微软云
+    accountName: johnwang
+    accountKey:
+    endPoint: core.windows.net
+    protocol: https
+    containerName: test
+    baseUrl: https://johnwang.blob.core.windows.net/test
+    type:  #azure # azure 微软云
+
+  location:
+    type: baidu # 用于区分用哪个平台的定位服务,如百度,阿里
+    serviceUrl: http://api.map.baidu.com/location/ip?ak={0}&coor=bd09ll&ip={1} # 百度定位服务接口,开发文档 https://lbsyun.baidu.com/index.php?title=webapi/ip-api
+    appKey: Y8125nlttvjMzqrK9n4mVEnNYnmccfoq   # 百度应用访问key,申请并激活百度开发者账号,创建个应用就可以获得
 
   swagger:
     basePackage: com.summer.tools

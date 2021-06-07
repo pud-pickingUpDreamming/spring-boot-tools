@@ -38,7 +38,6 @@
         <java.version>1.8</java.version>
         <druid.version>1.2.5</druid.version>
         <clickhouse.version>0.3.0</clickhouse.version>
-        <mybatis-plus-starter.version>1.0.5</mybatis-plus-starter.version>
         <mybatis-plus.version>3.4.1</mybatis-plus.version>
         <bcprov.version>1.67</bcprov.version>
         <cxf.starter.version>3.4.3</cxf.starter.version>
@@ -71,11 +70,6 @@
                 <version>${druid.version}</version>
             </dependency>
             <!-- mybatis plus 依赖 -->
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatisplus-spring-boot-starter</artifactId>
-                <version>${mybatis-plus-starter.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
