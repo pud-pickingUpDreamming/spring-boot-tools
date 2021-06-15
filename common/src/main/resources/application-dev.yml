@@ -21,7 +21,7 @@ common:
     protocol: https
     containerName: test
     baseUrl: https://johnwang.blob.core.windows.net/test
-    type:  #azure # azure 微软云
+    type:  azure # azure 微软云
 
   location:
     type: baidu # 用于区分用哪个平台的定位服务,如百度,阿里

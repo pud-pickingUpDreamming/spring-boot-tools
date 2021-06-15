@@ -4,18 +4,26 @@ import com.summer.tools.common.model.Person;
 import com.summer.tools.common.model.PlainBean;
 import com.summer.tools.common.model.Source;
 import com.summer.tools.common.model.Target;
+import com.summer.tools.common.services.ICloudStorageService;
 import com.summer.tools.common.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.annotation.Resource;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
+@SpringBootTest
 public class BaseToolsTest {
+    @Resource
+    private ICloudStorageService storageService;
 
     @Test
     public void aesUtilTest() {
@@ -135,5 +143,24 @@ public class BaseToolsTest {
         String serverFile = "/root/temp/server.conf";
         File clientPath = new File("D:\\data\\flowable\\");
         SFtpUtil.download(serverFile,clientPath);
+    }
+
+    @Test
+    public void azureListTest() {
+        List<String> fileNames = storageService.listBlobs("flowable");
+        fileNames.forEach(log::info);
+    }
+
+    /**
+     * flowable 前面不要加反斜杠
+     */
+    @Test
+    public void azureDownloadTest() {
+        storageService.download("flowable/测试.bpmn20.xml","D:\\data\\azure\\");
+    }
+
+    @Test
+    public void azureUploadTest() {
+        storageService.uploadFile(new File("D:\\data\\azure\\flowable\\test.bpmn20.xml"),"flowable");
     }
 }

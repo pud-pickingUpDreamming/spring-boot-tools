@@ -21,7 +21,6 @@ public class MainTest {
 
         String dateStr = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                 .format(LocalDateTime.ofEpochSecond(1622787084L, 0, ZoneOffset.ofHours(8)));
-        log.info("归属城市:[{}]", LocationUtil.getLocationByIP("1.15.74.240"));
         System.out.println(dateStr);
     }
 }

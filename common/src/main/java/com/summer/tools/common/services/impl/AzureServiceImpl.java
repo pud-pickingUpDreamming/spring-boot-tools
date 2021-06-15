@@ -21,7 +21,6 @@ import java.security.InvalidKeyException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -150,22 +149,21 @@ public class AzureServiceImpl implements ICloudStorageService {
     }
 
     @Override
-    public void download(String path, String baseDir) {
-        // 检查文件最终目录
-        String fullPath = baseDir.concat(path).trim();
-        String fullDir = fullPath.substring(0, fullPath.lastIndexOf("/"));
-        File file = new File(fullDir);
-        if (!file.exists() || !file.isDirectory()) {
-            if(!file.mkdirs()) {
-                return;
-            }
-        }
+    public void download(String path, String targetDir) {
+        // 目标文件全路径
+        String fullPath = targetDir.concat(path).trim();
 
         try {
+            File targetFile = new File(fullPath);
+            if (!targetFile.exists()) {
+                if (!targetFile.createNewFile()) {
+                    return;
+                }
+            }
             // 传入要blob的path
             CloudBlockBlob blob = container.getBlockBlobReference(path);
-            // 传入目标path
-            blob.downloadToFile(baseDir);
+            // 传入目标path,文件不存在会出现拒绝访问问题
+            blob.downloadToFile(fullPath);
         } catch (URISyntaxException | StorageException | IOException e) {
             log.error("azure云存储服务下载文件失败:", e);
             throw new BusinessException(ResponseCodeEnum.SYSTEM_ERROR);

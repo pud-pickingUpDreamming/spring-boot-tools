@@ -40,9 +40,9 @@ public interface ICloudStorageService {
     /**
      * 下载文件
      * @param path 云端文件路径(相对容器目录)
-     * @param baseDir 下载目标根目录
+     * @param targetDir 下载目标根目录
      */
-    void download(String path, String baseDir);
+    void download(String path, String targetDir);
 
     /**
      * 下载文件

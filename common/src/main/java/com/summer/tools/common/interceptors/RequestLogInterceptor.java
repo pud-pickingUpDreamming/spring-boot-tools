@@ -32,11 +32,6 @@ import java.time.format.DateTimeFormatter;
 @Order(1)
 public class RequestLogInterceptor {
 
-    /**
-     * 同一个请求在不同服务之间传递,方便检索
-     */
-    private static final String REQUEST_KEY = "requestId";
-
     @Resource
     private HttpServletRequest request;
     /**
@@ -72,7 +67,7 @@ public class RequestLogInterceptor {
             String response = JsonUtil.stringify(result);
             String ip = IPUtil.getIpAddr(request);
             String location = LocationUtil.getLocationByIP(ip);
-            log.info(LOG_FORMAT, request.getHeader(REQUEST_KEY), requestArgs, response, ip, location, cost);
+            log.info(LOG_FORMAT, request.getHeader(CommonConstants.REQUEST_KEY), requestArgs, response, ip, location, cost);
         }
         return result;
     }
