@@ -1,6 +1,7 @@
 package com.summer.tools.flowable;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @Author john.wang
  */
 @Slf4j
+@AutoConfigureMockMvc
 public abstract class AbstractControllerTest {
 
     @Resource

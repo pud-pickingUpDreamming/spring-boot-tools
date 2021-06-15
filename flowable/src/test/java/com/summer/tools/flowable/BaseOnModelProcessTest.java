@@ -20,8 +20,6 @@ public class BaseOnModelProcessTest extends AbstractControllerTest {
     @Resource
     private IProcessTemplateService flowService;
 
-
-
     @Test
     public void deployBaseOnModel() {
         DeployModel model = Builder.buildDeployModel();
