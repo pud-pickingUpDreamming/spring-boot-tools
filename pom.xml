@@ -49,7 +49,7 @@
         <fastjson.version>1.2.76</fastjson.version>
         <hutool.version>5.7.1</hutool.version>
         <poi-ooxml.version>5.0.0</poi-ooxml.version>
-
+        <easypoi.version>4.4.0</easypoi.version>
     </properties>
 
     <dependencyManagement>
@@ -63,6 +63,12 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>${poi-ooxml.version}</version>
+            </dependency>
+            <!-- easypoi依赖 -->
+            <dependency>
+                <groupId>cn.afterturn</groupId>
+                <artifactId>easypoi-spring-boot-starter</artifactId>
+                <version>${easypoi.version}</version>
             </dependency>
             <!-- 加解密工具包 -->
             <dependency>

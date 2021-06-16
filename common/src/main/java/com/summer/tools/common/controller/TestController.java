@@ -1,6 +1,11 @@
 package com.summer.tools.common.controller;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.summer.tools.common.annotations.BackendOperation;
+import com.summer.tools.common.model.EasypoiStudentEntity;
 import com.summer.tools.common.model.HutoolExcelTestModel;
 import com.summer.tools.common.utils.ExcelUtil;
 import com.summer.tools.common.utils.IPUtil;
@@ -17,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,5 +91,26 @@ public class TestController {
             ExcelUtil.exportExcel(list, response, fileName, fileName, HutoolExcelTestModel.class);
         }
         return ResponseResult.SUCCESS;
+    }
+
+    @PostMapping("/easyImport")
+    public ResponseResult<List<EasypoiStudentEntity>> easyImportTest(@ApiParam(value = "源文件地址") @RequestParam MultipartFile file) throws Exception {
+
+        ImportParams params = new ImportParams();
+        List<EasypoiStudentEntity> list = ExcelImportUtil.importExcel(file.getInputStream(), EasypoiStudentEntity.class, params);
+        return ResponseResult.success(list);
+    }
+
+    @GetMapping("/easyExport")
+    public void easyExportTest(@ApiParam(value = "文件名") @RequestParam String fileName) throws IOException {
+        List<EasypoiStudentEntity> list = new ArrayList<>();
+        EasypoiStudentEntity student = new EasypoiStudentEntity();
+        student.setId("1").setName("小明").setSex(1).setBirthday(LocalDateTime.now()).setRegistrationDate(LocalDateTime.now());
+        list.add(student);
+
+        ExportParams params = new ExportParams("学生信息","01班");
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Content-Disposition","attachment;filename="+ fileName +".xlsx");
+        ExcelExportUtil.exportExcel(params, EasypoiStudentEntity.class, list).write(response.getOutputStream());
     }
 }
