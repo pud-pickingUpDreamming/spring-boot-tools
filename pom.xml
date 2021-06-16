@@ -47,10 +47,23 @@
         <azure.version>1.2.8</azure.version>
         <jsch.version>0.1.55</jsch.version>
         <fastjson.version>1.2.76</fastjson.version>
+        <hutool.version>5.7.1</hutool.version>
+        <poi-ooxml.version>5.0.0</poi-ooxml.version>
+
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi-ooxml.version}</version>
+            </dependency>
             <!-- 加解密工具包 -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>

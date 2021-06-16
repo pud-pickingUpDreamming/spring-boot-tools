@@ -16,12 +16,15 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author john.wang
@@ -59,7 +62,7 @@ public class RequestLogInterceptor {
     public Object apiLogInterceptor(ProceedingJoinPoint pjp) throws Throwable {
         Object result = null;
         long startTime = System.currentTimeMillis();
-        String requestArgs = JsonUtil.stringify(pjp.getArgs());
+        String requestArgs = cleanArgs(pjp);
         try {
             result = pjp.proceed();
         } finally {
@@ -77,7 +80,8 @@ public class RequestLogInterceptor {
         Object result = null;
         OperationLog operationLog = new OperationLog();
         long startTime = System.currentTimeMillis();
-        String requestArgs = JsonUtil.stringify(pjp.getArgs());
+
+        String requestArgs = cleanArgs(pjp);
         try {
             //获取类的字节码对象，通过字节码对象获取方法信息
             Class<?> targetCls = pjp.getTarget().getClass();
@@ -106,6 +110,16 @@ public class RequestLogInterceptor {
             log.info(JsonUtil.stringify(operationLog));
         }
         return result;
+    }
+
+    private String cleanArgs(ProceedingJoinPoint pjp) {
+        List<Object> args = new ArrayList<>();
+        for (Object obj : pjp.getArgs()) {
+            if (!(obj instanceof MultipartFile)) {
+                args.add(obj);
+            }
+        }
+        return JsonUtil.stringify(args);
     }
 
     private String getCostTime(long startTime) {
