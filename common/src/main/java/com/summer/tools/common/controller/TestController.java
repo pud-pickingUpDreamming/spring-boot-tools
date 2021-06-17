@@ -97,6 +97,7 @@ public class TestController {
     public ResponseResult<List<EasypoiStudentEntity>> easyImportTest(@ApiParam(value = "源文件地址") @RequestParam MultipartFile file) throws Exception {
 
         ImportParams params = new ImportParams();
+        params.setTitleRows(1);
         List<EasypoiStudentEntity> list = ExcelImportUtil.importExcel(file.getInputStream(), EasypoiStudentEntity.class, params);
         return ResponseResult.success(list);
     }
