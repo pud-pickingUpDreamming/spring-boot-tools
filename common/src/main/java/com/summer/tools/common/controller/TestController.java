@@ -11,9 +11,12 @@ import com.summer.tools.common.utils.ExcelUtil;
 import com.summer.tools.common.utils.IPUtil;
 import com.summer.tools.common.utils.LocationUtil;
 import com.summer.tools.common.utils.ResponseResult;
+import com.summer.tools.common.validation.Add;
+import com.summer.tools.common.validation.Edit;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,7 +43,15 @@ public class TestController {
     @PostMapping("/swaggerTest/body")
     @ApiOperation(value = "swagger json参数测试接口")
     @BackendOperation(module = "公共模块", function = "swagger测试接口")
-    public ResponseResult<Result> swaggerTest(@RequestBody RequestParams params) {
+    public ResponseResult<Result> swaggerTest(@Validated(Add.class) @RequestBody RequestParams params) {
+
+        Result result = new Result().setKey(params.getKey()).setValue(params.getValue())
+                .setAdditionValue(params.getKey() + ":" + params.getValue());
+        return ResponseResult.success(result);
+    }
+
+    @GetMapping("/swaggerTest/body2")
+    public ResponseResult<Result> test(@Validated(Edit.class) RequestParams params) {
 
         Result result = new Result().setKey(params.getKey()).setValue(params.getValue())
                 .setAdditionValue(params.getKey() + ":" + params.getValue());

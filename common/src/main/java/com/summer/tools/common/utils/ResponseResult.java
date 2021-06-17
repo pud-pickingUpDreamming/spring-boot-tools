@@ -28,36 +28,50 @@ public class ResponseResult<T> {
     public static final ResponseResult<?> ERROR = new ResponseResult<>(ResponseCodeEnum.SYSTEM_ERROR);
     public static final ResponseResult<?> SUCCESS = new ResponseResult<>(ResponseCodeEnum.SUCCESS);
 
-    public ResponseResult(HttpStatus httpStatus, T data){
-        this.code=httpStatus.value();
-        this.message=httpStatus.getReasonPhrase();
+    public ResponseResult(Integer code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
+    public ResponseResult(HttpStatus httpStatus) {
+        this.code = httpStatus.value();
+        this.message = httpStatus.getReasonPhrase();
+    }
+
+    public ResponseResult(HttpStatus httpStatus, T data) {
+        this.code = httpStatus.value();
+        this.message = httpStatus.getReasonPhrase();
         this.data = data;
     }
 
-    public ResponseResult(ResponseCodeEnum responseCodeEnum){
+    public ResponseResult(ResponseCodeEnum responseCodeEnum) {
         this.code = responseCodeEnum.getCode();
         this.message = responseCodeEnum.getMessage();
     }
 
-    public ResponseResult(ResponseCodeEnum responseCodeEnum, T data){
+    public ResponseResult(ResponseCodeEnum responseCodeEnum, T data) {
         this.code = responseCodeEnum.getCode();
         this.message = responseCodeEnum.getMessage();
         this.data = data;
     }
 
-    public static <T> ResponseResult<T> failure(HttpStatus httpStatus, T data){
-        return new ResponseResult<>(httpStatus, data);
+    public static <T> ResponseResult<T> failure(HttpStatus httpStatus) {
+        return new ResponseResult<>(httpStatus);
     }
 
-    public static <T> ResponseResult<T> failure(ResponseCodeEnum responseCodeEnum, T data){
-        return new ResponseResult<>(responseCodeEnum, data);
+    public static <T> ResponseResult<T> failure(Integer code, String message) {
+        return new ResponseResult<>(code, message);
     }
 
-    public static <T> ResponseResult<T> success(T data){
+    public static <T> ResponseResult<T> failure(ResponseCodeEnum responseCodeEnum) {
+        return new ResponseResult<>(responseCodeEnum);
+    }
+
+    public static <T> ResponseResult<T> success(T data) {
     	return new ResponseResult<>(HttpStatus.OK, data);
     }
 
-    public static <T> ResponseResult<Page<T>> success(Integer total, List<T> data){
+    public static <T> ResponseResult<Page<T>> success(Integer total, List<T> data) {
         Page<T> page = new Page<>(total, data);
         return new ResponseResult<>(ResponseCodeEnum.SUCCESS, page);
     }

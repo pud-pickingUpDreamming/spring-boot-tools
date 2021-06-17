@@ -16,11 +16,11 @@ public class BusinessException extends RuntimeException{
 
     public BusinessException(ResponseCodeEnum err) {
         super();
-        this.code = err.getCode();
-        this.message = err.getMessage();
+        this.err = err;
     }
 
     private int code;
-
     private String message;
+
+    private ResponseCodeEnum err;
 }

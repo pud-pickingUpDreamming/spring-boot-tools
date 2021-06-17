@@ -32,7 +32,7 @@ import java.util.List;
 @Aspect
 @Component
 @Slf4j
-@Order(1)
+@Order(-1)
 public class RequestLogInterceptor {
 
     @Resource
@@ -58,23 +58,36 @@ public class RequestLogInterceptor {
     public void backendOperationLogInterceptor() {
     }
 
+    /**
+     * 触点端日志切面
+     */
     @Around("apiLogInterceptor()")
     public Object apiLogInterceptor(ProceedingJoinPoint pjp) throws Throwable {
         Object result = null;
         long startTime = System.currentTimeMillis();
+
         String requestArgs = cleanArgs(pjp);
+        String ip = IPUtil.getIpAddr(request);
+        String location = LocationUtil.getLocationByIP(ip);
+
         try {
             result = pjp.proceed();
+        } catch (Throwable ex) {
+            log.error(LOG_FORMAT, request.getHeader(CommonConstants.REQUEST_KEY), requestArgs, null, ip, location, 0, ex);
+            throw ex;
         } finally {
             String cost = getCostTime(startTime);
             String response = JsonUtil.stringify(result);
-            String ip = IPUtil.getIpAddr(request);
-            String location = LocationUtil.getLocationByIP(ip);
+
+
             log.info(LOG_FORMAT, request.getHeader(CommonConstants.REQUEST_KEY), requestArgs, response, ip, location, cost);
         }
         return result;
     }
 
+    /**
+     * 后台操作切面日志
+     */
     @Around("backendOperationLogInterceptor()")
     public Object backendOperationLogInterceptor(ProceedingJoinPoint pjp) throws Throwable {
         Object result = null;
@@ -100,6 +113,9 @@ public class RequestLogInterceptor {
                     .setUserId(request.getHeader(CommonConstants.CURRENT_USER_ID));
 
             result = pjp.proceed();
+        } catch (Throwable ex) {
+            log.error(JsonUtil.stringify(operationLog), ex);
+            throw ex;
         } finally {
             String cost = getCostTime(startTime);
             String response = JsonUtil.stringify(result);
