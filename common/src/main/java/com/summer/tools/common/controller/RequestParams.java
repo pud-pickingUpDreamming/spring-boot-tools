@@ -1,6 +1,5 @@
 package com.summer.tools.common.controller;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.summer.tools.common.validation.Add;
 import com.summer.tools.common.validation.Edit;
 import com.summer.tools.common.validation.EnumValid;
@@ -10,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -26,7 +26,8 @@ public class RequestParams {
     @NotBlank(message = "value 不能为空", groups = {Edit.class})
     private String value;
     @PastOrPresent(message = "date 格式错误", groups = {Add.class, Edit.class})
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    // 解决输入字符串时间问题
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private LocalDate date;
     @Email(message = "email 格式错误")
     private String email;
