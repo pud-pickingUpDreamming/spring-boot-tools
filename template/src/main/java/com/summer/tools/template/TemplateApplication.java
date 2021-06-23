@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan(basePackages = {"com.springboot.template.orm.dao"})
+@MapperScan(basePackages = {"com.summer.tools.template.orm.dao"})
 public class TemplateApplication {
 
     public static void main(String[] args) {

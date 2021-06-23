@@ -50,6 +50,8 @@
         <hutool.version>5.7.1</hutool.version>
         <poi-ooxml.version>5.0.0</poi-ooxml.version>
         <easypoi.version>4.4.0</easypoi.version>
+        <pgdriver.version>42.1.4</pgdriver.version>
+        <velocity.version>2.2</velocity.version>
     </properties>
 
     <dependencyManagement>
@@ -99,6 +101,11 @@
                 <artifactId>mybatis-plus-generator</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity-engine-core</artifactId>
+                <version>${velocity.version}</version>
+            </dependency>
             <!-- clickhouse驱动 -->
             <dependency>
                 <groupId>ru.yandex.clickhouse</groupId>
@@ -110,6 +117,11 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.connector.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${pgdriver.version}</version>
             </dependency>
             <!-- 工作流 -->
             <dependency>

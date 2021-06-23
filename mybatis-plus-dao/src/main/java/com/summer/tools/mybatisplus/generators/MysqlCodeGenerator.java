@@ -42,8 +42,8 @@ public class MysqlCodeGenerator {
         //给生成器添加数据源配置
 		DataSourceConfig dsc = new DataSourceConfig();
 		dsc.setDbType(DbType.MYSQL)
-				.setDriverName("com.mysql.cj.jdbc.Driver").setUsername("postgres").setPassword("admin")
-				.setUrl("jdbc:postgresql://1.15.132.121:7003/mybatis_demo");
+				.setDriverName("com.mysql.cj.jdbc.Driver").setUsername("root").setPassword("123456")
+				.setUrl("jdbc:mysql://1.15.132.121:7004/flowable-my?serverTimezone=Asia/Shanghai&&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true");
 
 		//给生成器添加策略配置
 		List<TableFill> tableFillList = new ArrayList<>();
@@ -85,18 +85,7 @@ public class MysqlCodeGenerator {
 
 	public static void main(String[] args) {
 		String[] tables = new String[]{
-//				"summer_boss_data_auth",
-//				"summer_boss_department",
-//				"summer_boss_dict",
-//				"summer_boss_menu",
-//				"summer_boss_operation_log",
-//				"summer_boss_role",
-//				"summer_boss_role_menu",
-//				"summer_boss_user_department",
-//				"summer_boss_user_role",
-				"summer_platform_tenant",
-				"summer_platform_db_resource",
-				"summer_platform_user"
+				"process_template"
 				 };
 		String outputDir = "E:\\springboot\\spring-boot-tools\\mybatis-plus-dao\\src\\main\\java";
 		String basePackage = "com.summer.tools.mybatisplus";

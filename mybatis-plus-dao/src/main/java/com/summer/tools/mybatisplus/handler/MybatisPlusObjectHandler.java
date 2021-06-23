@@ -1,6 +1,7 @@
 package com.summer.tools.mybatisplus.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.summer.tools.common.constants.CommonConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
@@ -11,9 +12,9 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @Component
-public class SelfObjectHandler implements MetaObjectHandler {
+public class MybatisPlusObjectHandler implements MetaObjectHandler {
     /**
-     * // 正常请求可以取到request信息。但是如果用到了线程池就取不到request信息了,会报错(如果有必要可以弄个TheadLocal解决)
+     * 正常请求可以取到request信息。但是如果用到了线程池就取不到request信息了,会报错(如果有必要可以弄个TheadLocal解决)
      */
     @Resource
     private HttpServletRequest request;

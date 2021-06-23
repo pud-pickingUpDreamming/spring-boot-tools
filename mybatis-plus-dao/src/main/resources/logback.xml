@@ -3,10 +3,10 @@
     <jmxConfigurator/>
     <property name = "logPath" value = "D:\\logs\\logs"/>
     <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${logPath}/template.log</File>
+        <File>${logPath}/dao.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>
-                ${logPath}/template/template-%d{yyyyMMdd}.log.%i
+                ${logPath}/dao/dao-%d{yyyyMMdd}.log.%i
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>500MB</maxFileSize>
@@ -27,7 +27,7 @@
         <File>${logPath}/template-error.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>
-                ${logPath}/template/template-error-%d{yyyyMMdd}.log.%i
+                ${logPath}/dao/dao-error-%d{yyyyMMdd}.log.%i
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>500MB</maxFileSize>

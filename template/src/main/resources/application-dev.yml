@@ -1,9 +1,11 @@
+logging:
+  config: classpath:logback.xml
 
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: ru.yandex.clickhouse.ClickHouseDriver
-    url: jdbc:clickhouse://175.24.121.139:7005/demo
+    url: jdbc:clickhouse://1.15.132.121:7005/demo
 
 template:
   enable: true
@@ -11,28 +13,21 @@ template:
 
 # mybatis 配置
 mybatis-plus:
-  mapper-locations: classpath:/mapper/*.xml
+  mapperLocations: classpath:/mapper/*.xml
   typeAliasesPackage: com.springboot.template.orm.model
   global-config:
-    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
-    id-type: 0
-    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
-    field-strategy: 2
-    #驼峰下划线转换
-    db-column-underline: true
-    #刷新mapper 调试神器
-    refresh-mapper: true
-    #数据库大写下划线转换
-    #capital-mode: true
-    #序列接口实现类配置
-    #key-generator: com.baomidou.springboot.xxx
-    #逻辑删除配置
-    #logic-delete-value: 0
-    #logic-not-delete-value: 1
-    #自定义填充策略接口实现
-    #meta-object-handler: com.baomidou.springboot.xxx
-    #自定义SQL注入器
-    #sql-injector: com.baomidou.springboot.xxx
-  configuration:
-    map-underscore-to-camel-case: true
-    cache-enabled: false
+    db-config:
+      # 主键类型
+      idType: AUTO
+      # 增删改字段策略
+      insertStrategy: NOT_NULL
+      updateStrategy: NOT_NULL
+      selectStrategy: NOT_NULL
+      # 表名是否使用驼峰转下划线命名,只对表名生效
+      tableUnderline: true
+      # 大写命名,对表名和字段名均生效
+      capitalMode: false
+      #逻辑删除配置
+      logicDeleteField: is_del
+      logicDeleteValue: 1
+      logicNotDeleteValue: 0
