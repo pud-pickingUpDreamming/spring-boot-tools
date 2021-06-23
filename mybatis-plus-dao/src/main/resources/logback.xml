@@ -40,7 +40,7 @@
             </Pattern>
         </layout>
     </appender>
-    <logger name="com.summer.tools.template" level="debug"/>
+<!--    <logger name="com.summer.tools.mybatisplus.orm" level="debug"/>-->
     <root level="INFO">
         <appender-ref ref="INFO_FILE" />
         <appender-ref ref="ERROR_FILE" />

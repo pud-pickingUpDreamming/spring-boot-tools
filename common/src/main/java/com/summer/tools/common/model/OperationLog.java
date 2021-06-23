@@ -10,11 +10,12 @@ import lombok.experimental.Accessors;
 public class OperationLog {
     private String module;
     private String function;
-    private String requestArgs;
-    private String response;
+    private String url;
+    private String params;
+    private String result;
     private String cost;
-    private String userId;
-    private String userName;
+    private String creatorId;
+    private String username;
     private String ipAddr;
     private String location;
     private String createTime;

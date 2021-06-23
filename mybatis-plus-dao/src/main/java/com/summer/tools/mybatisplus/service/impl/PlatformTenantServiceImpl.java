@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author john.wang
- * @since 2021-06-18
+ * @since 2021-06-23
  */
 @Service
 public class PlatformTenantServiceImpl extends ServiceImpl<PlatformTenantMapper, PlatformTenant> implements IPlatformTenantService {

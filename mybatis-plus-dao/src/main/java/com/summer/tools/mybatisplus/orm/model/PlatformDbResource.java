@@ -3,14 +3,15 @@ package com.summer.tools.mybatisplus.orm.model;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.summer.tools.mybatisplus.orm.model.AbstractModel;
 import com.baomidou.mybatisplus.annotation.Version;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * <p>
@@ -18,51 +19,51 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author john.wang
- * @since 2021-06-18
+ * @since 2021-06-23
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
 @TableName("summer_platform_db_resource")
-public class PlatformDbResource extends Model<PlatformDbResource> {
+@ApiModel(value="PlatformDbResource对象", description="数据库资源表")
+public class PlatformDbResource extends AbstractModel<PlatformDbResource> {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * 数据源名称
-     */
+    @ApiModelProperty(value = "数据源名称", required = true)
     private String sourceName;
 
-    /**
-     * 数据库连接
-     */
+    @ApiModelProperty(value = "数据库连接", required = true)
     private String url;
 
-    /**
-     * 数据库用户名
-     */
+    @ApiModelProperty(value = "数据库用户名", required = true)
     private String username;
 
-    /**
-     * 数据库密码
-     */
+    @ApiModelProperty(value = "数据库密码", required = true)
     private String password;
 
-    /**
-     * 数据库名称
-     */
+    @ApiModelProperty(value = "数据库名称", required = true)
     private String dbName;
-
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
-
+    @ApiModelProperty(value = "数据库schema")
     private String schema;
 
+
+    public static final String ID = "id";
+
+    public static final String SOURCE_NAME = "source_name";
+
+    public static final String URL = "url";
+
+    public static final String USERNAME = "username";
+
+    public static final String PASSWORD = "password";
+
+    public static final String DB_NAME = "db_name";
+
+    public static final String SCHEMA = "schema";
 
     @Override
     protected Serializable pkVal() {

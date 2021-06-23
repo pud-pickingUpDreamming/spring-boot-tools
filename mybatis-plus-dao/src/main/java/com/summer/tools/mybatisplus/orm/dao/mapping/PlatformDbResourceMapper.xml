@@ -5,13 +5,13 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.summer.tools.mybatisplus.orm.model.PlatformDbResource">
         <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
         <result column="source_name" property="sourceName" />
         <result column="url" property="url" />
         <result column="username" property="username" />
         <result column="password" property="password" />
         <result column="db_name" property="dbName" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
         <result column="schema" property="schema" />
     </resultMap>
 

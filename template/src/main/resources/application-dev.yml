@@ -22,7 +22,6 @@ mybatis-plus:
       # 增删改字段策略
       insertStrategy: NOT_NULL
       updateStrategy: NOT_NULL
-      selectStrategy: NOT_NULL
       # 表名是否使用驼峰转下划线命名,只对表名生效
       tableUnderline: true
       # 大写命名,对表名和字段名均生效

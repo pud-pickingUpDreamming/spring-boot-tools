@@ -9,7 +9,7 @@ server:
       enabled: true
 spring:
   profiles:
-    active: dev
+    active: dev, common
   application:
     name: template
 

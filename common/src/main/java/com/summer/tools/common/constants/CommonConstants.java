@@ -15,6 +15,8 @@ public interface CommonConstants {
     String UPDATE_TIME = "updateTime";
     String CREATOR = "creator";
     String UPDATER = "updater";
+    String CREATOR_ID = "creatorId";
+    String UPDATER_ID = "updaterId";
     // 泛指成功
     String SUCCESS = "0";
 }

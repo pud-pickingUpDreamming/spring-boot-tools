@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author john.wang
- * @since 2021-06-18
+ * @since 2021-06-23
  */
 public interface IPlatformUserService extends IService<PlatformUser> {
 

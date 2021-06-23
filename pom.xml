@@ -38,7 +38,8 @@
         <java.version>1.8</java.version>
         <druid.version>1.2.5</druid.version>
         <clickhouse.version>0.3.0</clickhouse.version>
-        <mybatis-plus.version>3.4.1</mybatis-plus.version>
+        <mybatis-plus.version>3.4.3.1</mybatis-plus.version>
+        <mybatis-plus-generator.version>3.4.1</mybatis-plus-generator.version>
         <bcprov.version>1.67</bcprov.version>
         <cxf.starter.version>3.4.3</cxf.starter.version>
         <mysql.connector.version>8.0.23</mysql.connector.version>
@@ -99,7 +100,7 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-generator</artifactId>
-                <version>${mybatis-plus.version}</version>
+                <version>${mybatis-plus-generator.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.velocity</groupId>

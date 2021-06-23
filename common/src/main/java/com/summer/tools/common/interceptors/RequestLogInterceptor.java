@@ -103,14 +103,14 @@ public class RequestLogInterceptor {
             //获取目标方法上的注解指定的操作名称
             Method targetMethod = targetCls.getDeclaredMethod(ms.getName(), ms.getParameterTypes());
             BackendOperation operation = targetMethod.getAnnotation(BackendOperation.class);
-            operationLog.setRequestArgs(requestArgs)
+            operationLog.setParams(requestArgs)
                     .setModule(operation.module()).setFunction(operation.function());
 
             String ip = IPUtil.getIpAddr(request);
             String location = LocationUtil.getLocationByIP(ip);
             operationLog.setIpAddr(ip).setLocation(location)
-                    .setUserName(request.getHeader(CommonConstants.CURRENT_USER_NAME))
-                    .setUserId(request.getHeader(CommonConstants.CURRENT_USER_ID));
+                    .setUsername(request.getHeader(CommonConstants.CURRENT_USER_NAME))
+                    .setCreatorId(request.getHeader(CommonConstants.CURRENT_USER_ID));
 
             result = pjp.proceed();
         } catch (Throwable ex) {
@@ -120,7 +120,7 @@ public class RequestLogInterceptor {
             String cost = getCostTime(startTime);
             String response = JsonUtil.stringify(result);
 
-            operationLog.setResponse(response).setCost(cost)
+            operationLog.setResult(response).setCost(cost)
                     .setCreateTime(DateTimeFormatter.ofPattern(DateUtil.YEAR_MONTH_DATE_HOUR_MINUTE_SECOND).format(LocalDateTime.now()));
             this.operationLogService.saveLog(operationLog);
             log.info(JsonUtil.stringify(operationLog));

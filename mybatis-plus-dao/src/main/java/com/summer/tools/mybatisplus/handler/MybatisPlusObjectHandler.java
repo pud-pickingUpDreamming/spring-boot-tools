@@ -22,7 +22,9 @@ public class MybatisPlusObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         try {
+            Integer userId = Integer.parseInt(request.getHeader(CommonConstants.CURRENT_USER_ID));
             String userName = request.getHeader(CommonConstants.CURRENT_USER_NAME);
+            this.strictInsertFill(metaObject, CommonConstants.CREATOR_ID, Integer.class, userId);
             this.strictInsertFill(metaObject, CommonConstants.CREATOR, String.class, userName);
         } catch (Exception ex) {
             log.error("获取不到用户信息:", ex);
@@ -34,8 +36,10 @@ public class MybatisPlusObjectHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         try {
+            Integer userId = Integer.parseInt(request.getHeader(CommonConstants.CURRENT_USER_ID));
             String userName = request.getHeader(CommonConstants.CURRENT_USER_NAME);
-            this.strictInsertFill(metaObject, CommonConstants.UPDATER, String.class, userName);
+            this.strictUpdateFill(metaObject, CommonConstants.UPDATER_ID, Integer.class, userId);
+            this.strictUpdateFill(metaObject, CommonConstants.UPDATER, String.class, userName);
         } catch (Exception ex) {
             log.error("获取不到用户信息:", ex);
         }

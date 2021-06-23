@@ -9,6 +9,6 @@ server:
       enabled: true
 spring:
   profiles:
-    active: dev
+    active: common
   application:
     name: common
