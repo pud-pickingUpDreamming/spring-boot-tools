@@ -1,5 +1,6 @@
 package com.summer.tools.mybatisplus.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.summer.tools.common.model.OperationLog;
 import com.summer.tools.common.services.IOperationLogService;
 import com.summer.tools.common.utils.BeanUtil;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
  * @author john.wang
  * @since 2021-06-25
  */
+@DS("pgSql")
 @Primary
 @Service
 public class SysOperationLogServiceImpl extends ServiceImpl<SysOperationLogMapper, SysOperationLog> implements ISysOperationLogService, IOperationLogService {

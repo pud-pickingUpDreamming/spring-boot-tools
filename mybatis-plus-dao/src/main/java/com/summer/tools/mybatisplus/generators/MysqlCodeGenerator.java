@@ -37,6 +37,7 @@ public class MysqlCodeGenerator {
 				.setBaseColumnList(false)
 				.setIdType(IdType.AUTO)
 				.setAuthor(author)
+				.setSwagger2(true)
 				.setOutputDir(outputDir)
 				.setOpen(false).setFileOverride(true);
 
@@ -54,7 +55,7 @@ public class MysqlCodeGenerator {
 		tableFillList.add(new TableFill("update_time", FieldFill.INSERT_UPDATE));
 
 		StrategyConfig strategy = new StrategyConfig();
-		strategy.setTablePrefix("summer").setNaming(NamingStrategy.underline_to_camel).setEntityLombokModel(true)
+		strategy.setTablePrefix("summer").setNaming(NamingStrategy.underline_to_camel).setEntityLombokModel(true).setChainModel(true)
 				.setSuperEntityClass(AbstractModel.class).setEntityColumnConstant(true)
 				.setSuperEntityColumns("create_time", "update_time", "creator_id", "updater_id", "version", "is_del")
 				.setInclude(tables).setTableFillList(tableFillList).setRestControllerStyle(true)

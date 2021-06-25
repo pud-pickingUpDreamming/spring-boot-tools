@@ -40,6 +40,7 @@
         <clickhouse.version>0.3.0</clickhouse.version>
         <mybatis-plus.version>3.4.3.1</mybatis-plus.version>
         <mybatis-plus-generator.version>3.4.1</mybatis-plus-generator.version>
+        <dynamic-datasource.version>3.4.0</dynamic-datasource.version>
         <bcprov.version>1.67</bcprov.version>
         <cxf.starter.version>3.4.3</cxf.starter.version>
         <mysql.connector.version>8.0.23</mysql.connector.version>
@@ -92,6 +93,12 @@
                 <version>${druid.version}</version>
             </dependency>
             <!-- mybatis plus 依赖 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>${dynamic-datasource.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>

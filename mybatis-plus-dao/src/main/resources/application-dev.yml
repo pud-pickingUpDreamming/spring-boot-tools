@@ -6,14 +6,24 @@ logging:
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://1.15.132.121:7003/postgres?useAffectedRows=true&currentSchema=public
-    username: postgres
-    password: admin
-#    driverClassName: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://1.15.132.121:7004/flowable-my?serverTimezone=Asia/Shanghai&&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
-#    username: root
-#    password: 123456
+#    driverClassName: org.postgresql.Driver
+#    url: jdbc:postgresql://1.15.132.121:7003/postgres?useAffectedRows=true&currentSchema=public
+#    username: postgres
+#    password: admin
+
+    dynamic:
+      primary: pgSql
+      datasource:
+        pgSql:
+          driver-class-name: org.postgresql.Driver
+          url: jdbc:postgresql://1.15.132.121:7003/postgres?useAffectedRows=true&currentSchema=public
+          username: postgres
+          password: admin
+        mysql:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://1.15.132.121:7004/flowable-my?serverTimezone=Asia/Shanghai&&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+          username: root
+          password: 123456
     druid:
       max-active: 100
       validation-query: select 1
@@ -32,17 +42,6 @@ spring:
         login-username: admin
         login-password: admin
         url-pattern: /druid/*
-
-    redis:
-      database: 2
-      host: 172.21.11.140
-      port: 8064
-      password: Qq11
-      pool:
-        max-active: 30
-        max-idle: 30
-        min-idle: 5
-        max-wait: 30000
 
 template:
   enable: true

@@ -8,10 +8,12 @@ CREATE TABLE `process_template` (
   `description` varchar(100) DEFAULT NULL COMMENT '流程描述',
   `xml_data` text COMMENT '流程xml内容',
   `status` int(2) COMMENT '1: 草稿 2: 发布 3: 删除',
+  `version` int(11) COMMENT '版本号',
+  `is_del` int(2) COMMENT '0: 正常 1: 删除',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `creator` varchar(100) DEFAULT NULL COMMENT '创建人',
+  `creator_id` int(11) DEFAULT NULL COMMENT '创建人',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `updater` varchar(100) DEFAULT NULL COMMENT '更新人',
+  `updater_id` int(11) DEFAULT NULL COMMENT '更新人',
   PRIMARY KEY (`template_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='流程模板表';
 
@@ -23,10 +25,12 @@ CREATE TABLE `process_line` (
   `source_ref` varchar(100) DEFAULT NULL COMMENT '源节点id',
   `target_ref` varchar(100) DEFAULT NULL COMMENT '目标节点id',
   `condition_expression` varchar(100) DEFAULT NULL COMMENT '流传条件表达式',
+  `version` int(11) COMMENT '版本号',
+  `is_del` int(2) COMMENT '0: 正常 1: 删除',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `creator` varchar(100) DEFAULT NULL COMMENT '创建人',
+  `creator_id` int(11) DEFAULT NULL COMMENT '创建人',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `updater` varchar(100) DEFAULT NULL COMMENT '更新人',
+  `updater_id` int(11) DEFAULT NULL COMMENT '更新人',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='流程线条表';
 
@@ -45,10 +49,12 @@ CREATE TABLE `process_node` (
   `width` int(11) DEFAULT NULL COMMENT '节点宽度',
   `axis_x` int(11) DEFAULT NULL COMMENT 'x轴坐标',
   `axis_y` int(11) DEFAULT NULL COMMENT 'y轴坐标',
+  `version` int(11) COMMENT '版本号',
+  `is_del` int(2) COMMENT '0: 正常 1: 删除',
   `create_time` varchar(100) DEFAULT NULL COMMENT '创建时间',
-  `creator` varchar(100) DEFAULT NULL COMMENT '创建人',
+  `creator_id` int(11) DEFAULT NULL COMMENT '创建人',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `updater` varchar(100) DEFAULT NULL COMMENT '更新人',
+  `updater_id` int(11) DEFAULT NULL COMMENT '更新人',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='流程节点表';
 
