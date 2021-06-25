@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Page<T> {
-    private Integer count;
+public class SimplePage<T> {
+    private Long count;
     private List<T> rows;
 }

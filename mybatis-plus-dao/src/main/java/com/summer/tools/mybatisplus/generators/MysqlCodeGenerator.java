@@ -50,15 +50,13 @@ public class MysqlCodeGenerator {
 		List<TableFill> tableFillList = new ArrayList<>();
 		tableFillList.add(new TableFill("creator_id", FieldFill.INSERT));
 		tableFillList.add(new TableFill("create_time", FieldFill.INSERT));
-		tableFillList.add(new TableFill("creator", FieldFill.INSERT));
 		tableFillList.add(new TableFill("updater_id", FieldFill.INSERT_UPDATE));
 		tableFillList.add(new TableFill("update_time", FieldFill.INSERT_UPDATE));
-		tableFillList.add(new TableFill("updater", FieldFill.UPDATE));
 
 		StrategyConfig strategy = new StrategyConfig();
 		strategy.setTablePrefix("summer").setNaming(NamingStrategy.underline_to_camel).setEntityLombokModel(true)
 				.setSuperEntityClass(AbstractModel.class).setEntityColumnConstant(true)
-				.setSuperEntityColumns("create_time", "update_time", "creator_id", "updater_id", "creator", "updater", "version", "is_del")
+				.setSuperEntityColumns("create_time", "update_time", "creator_id", "updater_id", "version", "is_del")
 				.setInclude(tables).setTableFillList(tableFillList).setRestControllerStyle(true)
 				.setVersionFieldName("version").setLogicDeleteFieldName("is_del")
 				.setSuperServiceClass(IService.class).setSuperServiceImplClass(ServiceImpl.class);

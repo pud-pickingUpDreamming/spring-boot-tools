@@ -1,7 +1,7 @@
 package com.summer.tools.common.utils;
 
 import com.summer.tools.common.enums.ResponseCodeEnum;
-import com.summer.tools.common.model.Page;
+import com.summer.tools.common.model.SimplePage;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -71,9 +71,9 @@ public class ResponseResult<T> {
     	return new ResponseResult<>(HttpStatus.OK, data);
     }
 
-    public static <T> ResponseResult<Page<T>> success(Integer total, List<T> data) {
-        Page<T> page = new Page<>(total, data);
-        return new ResponseResult<>(ResponseCodeEnum.SUCCESS, page);
+    public static <T> ResponseResult<SimplePage<T>> success(Long total, List<T> data) {
+        SimplePage<T> simplePage = new SimplePage<>(total, data);
+        return new ResponseResult<>(ResponseCodeEnum.SUCCESS, simplePage);
     }
 
 }

@@ -210,6 +210,7 @@ CREATE TABLE public.summer_sys_operation_log (
 	"cost" varchar(10) NULL,
 	"ip_addr" varchar(50) NULL,
 	"location" varchar(50) NULL,
+	"creator" varchar(50) NULL,
 	"version" int4 NULL DEFAULT 0,
 	is_del int2 NULL DEFAULT 0,
 	creator_id int4 NULL,
@@ -227,6 +228,7 @@ COMMENT ON COLUMN public.summer_sys_operation_log.result IS '操作结果';
 COMMENT ON COLUMN public.summer_sys_operation_log.cost IS '操作耗时';
 COMMENT ON COLUMN public.summer_sys_operation_log.ip_addr IS '操作人ip';
 COMMENT ON COLUMN public.summer_sys_operation_log.location IS '操作人位置';
+COMMENT ON COLUMN public.summer_sys_operation_log.creator IS '操作人名称';
 COMMENT ON COLUMN public.summer_sys_operation_log.creator_id IS '操作人';
 COMMENT ON COLUMN public.summer_sys_operation_log.create_time IS '操作时间';
 

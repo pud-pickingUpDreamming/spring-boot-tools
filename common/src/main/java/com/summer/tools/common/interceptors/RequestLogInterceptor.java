@@ -4,7 +4,6 @@ import com.summer.tools.common.annotations.BackendOperation;
 import com.summer.tools.common.constants.CommonConstants;
 import com.summer.tools.common.model.OperationLog;
 import com.summer.tools.common.services.IOperationLogService;
-import com.summer.tools.common.utils.DateUtil;
 import com.summer.tools.common.utils.IPUtil;
 import com.summer.tools.common.utils.JsonUtil;
 import com.summer.tools.common.utils.LocationUtil;
@@ -22,7 +21,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,9 +43,9 @@ public class RequestLogInterceptor {
 
     /**
      * 日志模板,统一了方便ELK处理
-     * 5个占位符分别代表 请求唯一标识,请求入参,请求结果,请求耗时
+     * 5个占位符分别代表 请求唯一标识,请求url,请求入参,请求结果,请求耗时
      */
-    private static final String LOG_FORMAT = "key:{},requestArgs:{},response:{},ip:{},location{},cost:{}";
+    private static final String LOG_FORMAT = "key:{},url:{},requestArgs:{},response:{},ip:{},location{},cost:{}";
 
     @Pointcut("!@annotation(com.summer.tools.common.annotations.BackendOperation) " +
             "&& execution(public * com.summer.tools.*.controller..*Controller.*(..))")
@@ -63,7 +61,6 @@ public class RequestLogInterceptor {
      */
     @Around("apiLogInterceptor()")
     public Object apiLogInterceptor(ProceedingJoinPoint pjp) throws Throwable {
-        Object result = null;
         long startTime = System.currentTimeMillis();
 
         String requestArgs = cleanArgs(pjp);
@@ -71,18 +68,17 @@ public class RequestLogInterceptor {
         String location = LocationUtil.getLocationByIP(ip);
 
         try {
-            result = pjp.proceed();
-        } catch (Throwable ex) {
-            log.error(LOG_FORMAT, request.getHeader(CommonConstants.REQUEST_KEY), requestArgs, null, ip, location, 0, ex);
-            throw ex;
-        } finally {
+            Object result = pjp.proceed();
+
             String cost = getCostTime(startTime);
             String response = JsonUtil.stringify(result);
 
-
-            log.info(LOG_FORMAT, request.getHeader(CommonConstants.REQUEST_KEY), requestArgs, response, ip, location, cost);
+            log.info(LOG_FORMAT, request.getHeader(CommonConstants.REQUEST_KEY), request.getRequestURI(), requestArgs, response, ip, location, cost);
+            return result;
+        } catch (Throwable ex) {
+            log.error(LOG_FORMAT, request.getHeader(CommonConstants.REQUEST_KEY), request.getRequestURI(), requestArgs, null, ip, location, 0, ex);
+            throw ex;
         }
-        return result;
     }
 
     /**
@@ -90,7 +86,6 @@ public class RequestLogInterceptor {
      */
     @Around("backendOperationLogInterceptor()")
     public Object backendOperationLogInterceptor(ProceedingJoinPoint pjp) throws Throwable {
-        Object result = null;
         OperationLog operationLog = new OperationLog();
         long startTime = System.currentTimeMillis();
 
@@ -109,23 +104,24 @@ public class RequestLogInterceptor {
             String ip = IPUtil.getIpAddr(request);
             String location = LocationUtil.getLocationByIP(ip);
             operationLog.setIpAddr(ip).setLocation(location)
-                    .setUsername(request.getHeader(CommonConstants.CURRENT_USER_NAME))
-                    .setCreatorId(request.getHeader(CommonConstants.CURRENT_USER_ID));
+                    .setUrl(request.getRequestURI())
+                    .setCreator(request.getHeader(CommonConstants.CURRENT_USER_NAME))
+                    .setCreatorId(Integer.parseInt(request.getHeader(CommonConstants.CURRENT_USER_ID)));
 
-            result = pjp.proceed();
-        } catch (Throwable ex) {
-            log.error(JsonUtil.stringify(operationLog), ex);
-            throw ex;
-        } finally {
+            Object result = pjp.proceed();
+
             String cost = getCostTime(startTime);
             String response = JsonUtil.stringify(result);
 
-            operationLog.setResult(response).setCost(cost)
-                    .setCreateTime(DateTimeFormatter.ofPattern(DateUtil.YEAR_MONTH_DATE_HOUR_MINUTE_SECOND).format(LocalDateTime.now()));
+            operationLog.setResult(response).setCost(cost).setCreateTime(LocalDateTime.now());
             this.operationLogService.saveLog(operationLog);
             log.info(JsonUtil.stringify(operationLog));
+
+            return result;
+        } catch (Throwable ex) {
+            log.error(JsonUtil.stringify(operationLog), ex);
+            throw ex;
         }
-        return result;
     }
 
     private String cleanArgs(ProceedingJoinPoint pjp) {

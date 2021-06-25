@@ -30,10 +30,6 @@ public abstract class AbstractModel<T extends Model<?>> extends Model<T> {
     @ApiModelProperty(hidden = true)
     @TableField(fill = FieldFill.INSERT)
     private Integer creatorId;
-//
-//    @ApiModelProperty(hidden = true)
-//    @TableField(fill = FieldFill.INSERT)
-//    private String creator;
 
     @ApiModelProperty(hidden = true)
     @TableField(fill = FieldFill.INSERT_UPDATE)
@@ -42,11 +38,7 @@ public abstract class AbstractModel<T extends Model<?>> extends Model<T> {
     @ApiModelProperty(hidden = true)
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Integer updaterId;
-//
-//    @ApiModelProperty(hidden = true)
-//    @TableField(fill = FieldFill.INSERT_UPDATE)
-//    private String updater;
-//
+
     @ApiModelProperty(value = "数据版本号,新增时为0. 更新时把查询出来的版本号原样返回")
     @Version
     private Integer version;

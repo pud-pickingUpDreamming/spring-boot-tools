@@ -45,21 +45,19 @@ public class PostGreSqlCodeGenerator {
 		DataSourceConfig dsc = new DataSourceConfig();
 		dsc.setDbType(DbType.POSTGRE_SQL)
 				.setDriverName("org.postgresql.Driver").setUsername("postgres").setPassword("admin")
-				.setUrl("jdbc:postgresql://1.15.132.121:7003/mybatis_demo");
+				.setUrl("jdbc:postgresql://1.15.132.121:7003/postgres");
 
 		//给生成器添加策略配置
 		List<TableFill> tableFillList = new ArrayList<>();
 		tableFillList.add(new TableFill("creator_id", FieldFill.INSERT));
 		tableFillList.add(new TableFill("create_time", FieldFill.INSERT));
-		tableFillList.add(new TableFill("creator", FieldFill.INSERT));
 		tableFillList.add(new TableFill("updater_id", FieldFill.INSERT_UPDATE));
 		tableFillList.add(new TableFill("update_time", FieldFill.INSERT_UPDATE));
-		tableFillList.add(new TableFill("updater", FieldFill.UPDATE));
 
 		StrategyConfig strategy = new StrategyConfig();
 		strategy.setTablePrefix("summer").setNaming(NamingStrategy.underline_to_camel).setEntityLombokModel(true)
 				.setSuperEntityClass(AbstractModel.class).setEntityColumnConstant(true)
-				.setSuperEntityColumns("create_time", "update_time", "creator_id", "updater_id", "creator", "updater", "version", "is_del")
+				.setSuperEntityColumns("create_time", "update_time", "creator_id", "updater_id", "version", "is_del")
 				.setInclude(tables).setTableFillList(tableFillList).setRestControllerStyle(true)
 				.setVersionFieldName("version").setLogicDeleteFieldName("is_del")
 				.setSuperServiceClass(IService.class).setSuperServiceImplClass(ServiceImpl.class);
@@ -89,18 +87,18 @@ public class PostGreSqlCodeGenerator {
 
 	public static void main(String[] args) {
 		String[] tables = new String[]{
-//				"summer_boss_data_auth",
-//				"summer_boss_department",
-//				"summer_boss_dict",
-//				"summer_boss_menu",
-//				"summer_boss_operation_log",
-//				"summer_boss_role",
-//				"summer_boss_role_menu",
-//				"summer_boss_user_department",
-//				"summer_boss_user_role",
-				"summer_platform_tenant",
-				"summer_platform_db_resource",
-				"summer_platform_user"
+//				"summer_sys_data_auth",
+//				"summer_sys_department",
+//				"summer_sys_dict",
+//				"summer_sys_menu",
+				"summer_sys_operation_log",
+//				"summer_sys_role",
+//				"summer_sys_role_menu",
+//				"summer_sys_user_department",
+//				"summer_sys_user_role",
+//				"summer_platform_tenant",
+//				"summer_platform_db_resource",
+//				"summer_platform_user"
 				 };
 		String outputDir = "E:\\springboot\\spring-boot-tools\\mybatis-plus-dao\\src\\main\\java";
 		String basePackage = "com.summer.tools.mybatisplus";
