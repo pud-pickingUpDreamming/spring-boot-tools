@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "template")
-public class TemplateProperties {
+@ConfigurationProperties(prefix = "tenant")
+public class DaoMybatisPlusProperties {
     private Boolean enable;
+    private String service;
 }

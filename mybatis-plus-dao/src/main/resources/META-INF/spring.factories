@@ -1,3 +1,6 @@
 # Environment Post Processors
 org.springframework.boot.env.EnvironmentPostProcessor=\
 com.summer.tools.mybatisplus.config.SafetyEncryptProcessor
+
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+#com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration

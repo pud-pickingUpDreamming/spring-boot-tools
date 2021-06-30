@@ -305,3 +305,20 @@ CREATE TABLE public.summer_sys_user_role (
 COMMENT ON TABLE public.summer_sys_user_role IS '系统级别用户角色关联表';
 COMMENT ON COLUMN public.summer_sys_user_role.user_id IS '登录用户id';
 COMMENT ON COLUMN public.summer_sys_user_role.role_id IS '角色id';
+
+DROP TABLE if exists public.summer_platform_tenant_datasource;
+
+CREATE TABLE public.summer_platform_tenant_datasource (
+	id serial NOT NULL,
+	datasource_id int4 NULL,
+	tenant_id int4 NULL,
+	"tenant_name" varchar(20) NULL DEFAULT 'public'::character varying,
+	"module" varchar(20) NULL DEFAULT 'public'::character varying,
+	"version" int4 NULL DEFAULT 0,
+	is_del int2 NULL DEFAULT 0,
+	creator_id int4 NULL,
+	updater_id int4 NULL,
+	create_time timestamp NULL,
+	update_time timestamp NULL,
+	CONSTRAINT summer_platform_tenant_datasource_pk PRIMARY KEY (id)
+);

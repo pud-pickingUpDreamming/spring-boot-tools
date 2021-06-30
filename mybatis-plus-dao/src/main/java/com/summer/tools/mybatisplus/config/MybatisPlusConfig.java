@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.summer.tools.mybatisplus.properties.TemplateProperties;
+import com.summer.tools.mybatisplus.properties.DaoMybatisPlusProperties;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -19,12 +19,12 @@ import javax.annotation.Resource;
 public class MybatisPlusConfig {
 
     @Resource
-    private TemplateProperties templateProperties;
+    private DaoMybatisPlusProperties daoMybatisPlusProperties;
 
     @Bean
     @ConditionalOnProperty(name = "template.enable", havingValue = "true")
     public void template() {
-        System.out.println(templateProperties.getEnable());
+        System.out.println(daoMybatisPlusProperties.getEnable());
     }
 
     @Bean
@@ -37,4 +37,8 @@ public class MybatisPlusConfig {
         return interceptor;
     }
 
+    @Bean
+    public DataSourceProvider dataSourceProvider() {
+        return new DataSourceProvider();
+    }
 }
