@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,7 @@ import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author john.wang
@@ -45,7 +47,7 @@ public class RequestLogInterceptor {
      * 日志模板,统一了方便ELK处理
      * 5个占位符分别代表 请求唯一标识,请求url,请求入参,请求结果,请求耗时
      */
-    private static final String LOG_FORMAT = "key:{},url:{},requestArgs:{},response:{},ip:{},location{},cost:{}";
+    private static final String LOG_FORMAT = "url:{},requestArgs:{},response:{},ip:{},location{},cost:{}";
 
     @Pointcut("!@annotation(com.summer.tools.common.annotations.BackendOperation) " +
             "&& execution(public * com.summer.tools.*.controller..*Controller.*(..))")
@@ -66,6 +68,7 @@ public class RequestLogInterceptor {
         String requestArgs = cleanArgs(pjp);
         String ip = IPUtil.getIpAddr(request);
         String location = LocationUtil.getLocationByIP(ip);
+        MDC.put(CommonConstants.TRACE_ID, UUID.randomUUID().toString().replace("-", ""));
 
         try {
             Object result = pjp.proceed();
@@ -73,10 +76,10 @@ public class RequestLogInterceptor {
             String cost = getCostTime(startTime);
             String response = JsonUtil.stringify(result);
 
-            log.info(LOG_FORMAT, request.getHeader(CommonConstants.REQUEST_KEY), request.getRequestURI(), requestArgs, response, ip, location, cost);
+            log.info(LOG_FORMAT, request.getRequestURI(), requestArgs, response, ip, location, cost);
             return result;
         } catch (Throwable ex) {
-            log.error(LOG_FORMAT, request.getHeader(CommonConstants.REQUEST_KEY), request.getRequestURI(), requestArgs, null, ip, location, 0, ex);
+            log.error(LOG_FORMAT, request.getRequestURI(), requestArgs, null, ip, location, 0, ex);
             throw ex;
         }
     }
@@ -90,6 +93,7 @@ public class RequestLogInterceptor {
         long startTime = System.currentTimeMillis();
 
         String requestArgs = cleanArgs(pjp);
+        MDC.put(CommonConstants.TRACE_ID, UUID.randomUUID().toString().replace("-", ""));
         try {
             //获取类的字节码对象，通过字节码对象获取方法信息
             Class<?> targetCls = pjp.getTarget().getClass();
@@ -104,7 +108,7 @@ public class RequestLogInterceptor {
             String ip = IPUtil.getIpAddr(request);
             String location = LocationUtil.getLocationByIP(ip);
             operationLog.setIpAddr(ip).setLocation(location)
-                    .setUrl(request.getRequestURI())
+                    .setUrl(request.getMethod() + "  " + request.getRequestURI())
                     .setCreator(request.getHeader(CommonConstants.CURRENT_USER_NAME))
                     .setCreatorId(Integer.parseInt(request.getHeader(CommonConstants.CURRENT_USER_ID)));
 
@@ -115,6 +119,7 @@ public class RequestLogInterceptor {
 
             operationLog.setResult(response).setCost(cost).setCreateTime(LocalDateTime.now());
             this.operationLogService.saveLog(operationLog);
+
             log.info(JsonUtil.stringify(operationLog));
 
             return result;

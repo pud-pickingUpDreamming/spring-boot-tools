@@ -8,7 +8,8 @@ public interface CommonConstants {
     /**
      * 同一个请求在不同服务之间传递,方便检索
      */
-    String REQUEST_KEY = "requestId";
+    String TRACE_ID = "traceId";
+    String TENANT = "tenant";
 
     // 数据记录时间和人
     String CREATE_TIME = "createTime";

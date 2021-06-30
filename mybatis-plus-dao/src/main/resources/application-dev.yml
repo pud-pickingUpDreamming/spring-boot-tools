@@ -16,14 +16,14 @@ spring:
       datasource:
         pgSql:
           driver-class-name: org.postgresql.Driver
-          url: jdbc:postgresql://1.15.132.121:7003/postgres?useAffectedRows=true&currentSchema=public
-          username: postgres
-          password: admin
+          url: encrypt:aKdMv/OTp0pF6sNyYFd4+Jx6W3uyzMaSh5jTTMN2jmx/1yjW8ho89i9QYp9Zv/zX47kXDN9WLE+PCkbnAgAgtvuaWUBKRvGGi3hbjZ6IeBLXc5gngdYU/ljkC0C5KPIY
+          username: encrypt:mRJiAObRQ86L5Pfo+lmsVQ==
+          password: encrypt:rfWFZu1q/SQFmaqMKmphJw==
         mysql:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://1.15.132.121:7004/flowable-my?serverTimezone=Asia/Shanghai&&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
-          username: root
-          password: 123456
+          url: encrypt:IJpNXqe+5RtPSb+/rCuqzS5d0J1ZF5GdazE5EKW3thXaTWYEusQOSsHy7QUJAu7jZwTtZfONsgDq6sQ3lygxbkVBG/jcY9Ry7oo6JC3Yl9erMZecbP7opuA1hbtm0qdYfHQL88f7NamQb9kS3AVgUh+zuh2GTYrzWotvzgQtdsQYvomwR65ReTd5m/f1u4ju
+          username: encrypt:Ck/Pyuq4uHEWt9yQg+4wbw==
+          password: encrypt:dQcSO4Z5iULoFru3T1v5Tg==
     druid:
       max-active: 100
       validation-query: select 1

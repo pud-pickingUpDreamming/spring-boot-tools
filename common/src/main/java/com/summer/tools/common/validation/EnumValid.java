@@ -2,6 +2,7 @@ package com.summer.tools.common.validation;
 
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
@@ -30,20 +31,30 @@ public @interface EnumValid {
 
     String method() default "isValid";
 
+    boolean notNull() default false;
+
     class EnumValidator implements ConstraintValidator<EnumValid, Object> {
 
         private Class<? extends Enum<?>> clazz;
         private String validMethod;
+        private EnumValid enumValid;
 
         @Override
         public void initialize(EnumValid constraintAnnotation) {
             this.clazz = constraintAnnotation.clazz();
             this.validMethod = constraintAnnotation.method();
+            this.enumValid = constraintAnnotation;
         }
 
         @SneakyThrows
         @Override
         public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
+
+            boolean notNull = enumValid.notNull();
+
+            if (notNull && ObjectUtils.isEmpty(value)) {
+                return Boolean.FALSE;
+            }
 
             // 如果没传值算校验通过,也可以根据需求调整为校验不通过
             if (ObjectUtils.isEmpty(value)) {
