@@ -7,7 +7,7 @@
         <result column="password" jdbcType="VARCHAR" property="password" />
         <result column="phone" jdbcType="VARCHAR" property="phone" />
         <result column="email" jdbcType="VARCHAR" property="email" />
-        <result column="create_day" jdbcType="VARCHAR" property="createTime" />
+        <result column="create_time" jdbcType="VARCHAR" property="createTime" />
     </resultMap>
     <sql id="Base_Column_List">
         id,user_name,password,phone,email,create_time
