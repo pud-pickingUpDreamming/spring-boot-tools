@@ -6,6 +6,7 @@ public interface Constants {
      * CAFFEINE : caffeine 缓存管理
      */
     String CAFFEINE = "caffeineCacheManager";
+    String REDIS = "redisCacheManager";
 
 
     /**

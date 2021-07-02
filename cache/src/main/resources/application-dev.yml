@@ -9,8 +9,32 @@ spring:
     driverClassName: ru.yandex.clickhouse.ClickHouseDriver
     url: jdbc:clickhouse://1.15.132.121:7005/demo
 
+  redis:
+    host: 175.24.121.139
+    port: 7000
+    password: admin
+
+#    cluster:
+#      max-redirects: 3
+#      nodes:
+#        - node1
+#        - node2
+#        - node3
+    lettuce:
+      pool:
+        # redis单线程处理指令, 最大活跃线程数与内核线程数据保持一致
+        max-active: 2
+
+#      cluster:
+#        refresh:
+#          period: 5
+#          adaptive: true
+
+
+
 cache:
-  enable: true
+  redisEnable: true
+  caffeineEnable: true
 
 
 # mybatis 配置

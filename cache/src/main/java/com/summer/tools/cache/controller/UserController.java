@@ -2,6 +2,7 @@ package com.summer.tools.cache.controller;
 
 import com.summer.tools.cache.orm.model.UserInfo;
 import com.summer.tools.cache.service.IUserInfoService;
+import com.summer.tools.common.annotations.BackendOperation;
 import com.summer.tools.common.utils.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +29,7 @@ public class UserController {
     }
     @GetMapping("/{id}")
     @ApiOperation("查询用户")
+    @BackendOperation(module = "缓存模块", function = "查询用户")
     public ResponseResult<UserInfo> selectById (@PathVariable Integer id) {
         return ResponseResult.success(userInfoService.selectById(id));
     }

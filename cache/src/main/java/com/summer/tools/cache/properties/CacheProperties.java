@@ -10,5 +10,6 @@ import org.springframework.stereotype.Component;
 @Setter
 @ConfigurationProperties(prefix = "cache")
 public class CacheProperties {
-    private Boolean enable;
+    private Boolean redisEnable;
+    private Boolean caffeineEnable;
 }

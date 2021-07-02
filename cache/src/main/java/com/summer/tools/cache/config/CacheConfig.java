@@ -11,15 +11,36 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.cache.RedisCacheWriter;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+
+import javax.annotation.Resource;
 
 @Configuration
 @EnableCaching
 public class CacheConfig {
 
+    @Resource
+    private RedisConnectionFactory connectionFactory;
+
+    /**
+     * redis缓存管理
+     */
+    @ConditionalOnProperty(name = "cache.redisEnable", havingValue = "true")
+    @Bean(name = Constants.REDIS)
+    @Primary
+    public CacheManager redisCacheManager() {
+        return RedisCacheManager.builder()
+                .cacheWriter(RedisCacheWriter.lockingRedisCacheWriter(connectionFactory))
+                .build();
+    }
+
     /**
      * 二级缓存管理
      */
-    @ConditionalOnProperty(name = "cache.enable", havingValue = "true")
+    @ConditionalOnProperty(name = "cache.caffeineEnable", havingValue = "true")
     @Bean(name = Constants.CAFFEINE)
     public CacheManager caffeineCacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();

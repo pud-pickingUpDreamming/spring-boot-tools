@@ -9,6 +9,7 @@ import com.summer.tools.cache.service.IDictService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,6 +30,7 @@ public class DictServiceImpl implements IDictService {
     }
 
     @Override
+    @Cacheable(value = Constants.CACHE_DICT, key = "#id", cacheManager = Constants.REDIS)
     public Dict selectById(Integer id) {
         return dictMapper.selectById(id);
     }

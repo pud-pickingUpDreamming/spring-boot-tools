@@ -31,6 +31,10 @@
     <modules>
         <module>common</module>
         <module>webservice</module>
+        <module>mybatis-plus-dao</module>
+        <module>flowable</module>
+        <module>flowable-all</module>
+        <module>cache</module>
     </modules>
 
     <properties>
