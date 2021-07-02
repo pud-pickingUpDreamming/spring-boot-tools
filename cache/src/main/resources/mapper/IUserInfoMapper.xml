@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.summer.tools.cache.orm.dao.IUserInfoMapper">
+    <resultMap id="BaseResultMap" type="com.summer.tools.cache.orm.model.UserInfo">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="create_day" jdbcType="VARCHAR" property="createTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,user_name,password,phone,email,create_time
+    </sql>
+    <insert id="saveData" parameterType="com.summer.tools.cache.orm.model.UserInfo" >
+        INSERT INTO user_info
+        (id,user_name,password,phone,email,create_time)
+        VALUES
+        (#{id,jdbcType=INTEGER},#{userName,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},
+        #{phone,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR})
+    </insert>
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from user_info
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectList" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from user_info
+    </select>
+</mapper>

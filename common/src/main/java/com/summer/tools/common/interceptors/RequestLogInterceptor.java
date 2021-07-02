@@ -69,17 +69,17 @@ public class RequestLogInterceptor {
         String ip = IPUtil.getIpAddr(request);
         String location = LocationUtil.getLocationByIP(ip);
         MDC.put(CommonConstants.TRACE_ID, UUID.randomUUID().toString().replace("-", ""));
-
+        String url = request.getMethod() + "  " + request.getRequestURI();
         try {
             Object result = pjp.proceed();
 
             String cost = getCostTime(startTime);
             String response = JsonUtil.stringify(result);
 
-            log.info(LOG_FORMAT, request.getRequestURI(), requestArgs, response, ip, location, cost);
+            log.info(LOG_FORMAT, url, requestArgs, response, ip, location, cost);
             return result;
         } catch (Throwable ex) {
-            log.error(LOG_FORMAT, request.getRequestURI(), requestArgs, null, ip, location, 0, ex);
+            log.error(LOG_FORMAT, url, requestArgs, null, ip, location, 0, ex);
             throw ex;
         }
     }

@@ -1,0 +1,34 @@
+logging:
+  config: classpath:logback.xml
+
+
+spring:
+  # 本地缓存
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: ru.yandex.clickhouse.ClickHouseDriver
+    url: jdbc:clickhouse://1.15.132.121:7005/demo
+
+cache:
+  enable: true
+
+
+# mybatis 配置
+mybatis-plus:
+  mapperLocations: classpath:/mapper/*.xml
+  typeAliasesPackage: com.summer.tools.cache.orm.model
+  global-config:
+    db-config:
+      # 主键类型 clickhouse 不支持主键
+#      idType: AUTO
+      # 增删改字段策略
+      insertStrategy: NOT_NULL
+      updateStrategy: NOT_NULL
+      # 表名是否使用驼峰转下划线命名,只对表名生效
+      tableUnderline: true
+      # 大写命名,对表名和字段名均生效
+      capitalMode: false
+      #逻辑删除配置
+      logicDeleteField: is_del
+      logicDeleteValue: 1
+      logicNotDeleteValue: 0
