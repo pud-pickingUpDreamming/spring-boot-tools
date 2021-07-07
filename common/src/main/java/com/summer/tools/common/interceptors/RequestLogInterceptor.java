@@ -109,8 +109,10 @@ public class RequestLogInterceptor {
             String location = LocationUtil.getLocationByIP(ip);
             operationLog.setIpAddr(ip).setLocation(location)
                     .setUrl(request.getMethod() + "  " + request.getRequestURI())
-                    .setCreator(request.getHeader(CommonConstants.CURRENT_USER_NAME))
-                    .setCreatorId(Integer.parseInt(request.getHeader(CommonConstants.CURRENT_USER_ID)));
+                    .setCreator(request.getHeader(CommonConstants.CURRENT_USER_NAME));
+            if (request.getHeader(CommonConstants.CURRENT_USER_ID) != null) {
+                operationLog.setCreatorId(Integer.parseInt(request.getHeader(CommonConstants.CURRENT_USER_ID)));
+            }
 
             Object result = pjp.proceed();
 
