@@ -58,10 +58,17 @@
         <easypoi.version>4.4.0</easypoi.version>
         <pgdriver.version>42.1.4</pgdriver.version>
         <velocity.version>2.2</velocity.version>
+        <redisson.version>3.16.0</redisson.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>

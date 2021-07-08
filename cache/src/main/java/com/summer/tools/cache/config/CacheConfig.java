@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.summer.tools.cache.constant.CacheType;
 import com.summer.tools.cache.constant.Constants;
+import com.summer.tools.cache.lock.RedisLock;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
@@ -44,6 +45,8 @@ public class CacheConfig {
         template.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(String.class));
         template.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
         template.setConnectionFactory(connectionFactory);
+
+        RedisLock.setRedisClient(template);
         return template;
     }
 

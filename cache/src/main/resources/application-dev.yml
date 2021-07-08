@@ -13,7 +13,7 @@ spring:
     host: 175.24.121.139
     port: 7000
     password: admin
-
+    timeout:
 #    cluster:
 #      max-redirects: 3
 #      nodes:
