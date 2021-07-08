@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 @Getter
 public enum CacheType {
+    DEFAULT(60, TimeUnit.SECONDS, 1000, null),
     USER(60, TimeUnit.SECONDS, 1000, UserCacheLoader.class),
     DICT(365, TimeUnit.DAYS, 1000, DictCacheLoader.class);
 

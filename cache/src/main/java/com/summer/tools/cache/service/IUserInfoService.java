@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IUserInfoService {
 
-    void saveData(UserInfo userInfo);
+    UserInfo saveData(UserInfo userInfo);
 
     UserInfo selectById(@Param("id") Integer id);
 

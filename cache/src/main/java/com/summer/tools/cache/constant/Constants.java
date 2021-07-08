@@ -4,6 +4,7 @@ public interface Constants {
     /**
      * 缓存管理器类型
      * CAFFEINE : caffeine 缓存管理
+     * REDIS : redis 缓存管理
      */
     String CAFFEINE = "caffeineCacheManager";
     String REDIS = "redisCacheManager";

@@ -11,7 +11,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @see org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
- * redis 自动配置默认注入了两个实例 redisTemplate 和 stringRedisTemplate, 一般比较常用的是 stringRedisTemplate
+ * redis 自动配置默认注入了两个实例 redisTemplate 和 stringRedisTemplate,
+ * 可以自定义设置序列化实现 {@link com.summer.tools.cache.config.CacheConfig#redisTemplate} 用起来比stringRedisTemplate 体验好
  * 如果用redisTemplate T 可以是任何对象,字节操作(入参/出参都是字节)
  */
 @Service

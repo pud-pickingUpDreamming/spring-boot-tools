@@ -6,6 +6,7 @@ import com.summer.tools.cache.orm.model.UserInfo;
 import com.summer.tools.cache.service.IUserInfoService;
 import com.summer.tools.cache.service.RedisService;
 import com.summer.tools.common.utils.JsonUtil;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -19,21 +20,23 @@ public class UserInfoServiceImpl implements IUserInfoService {
     @Resource
     private IUserInfoMapper userInfoMapper;
     @Resource
-    private RedisService<String> redisService;
+    private RedisService<UserInfo> redisService;
 
     @Override
-    public void saveData(UserInfo userInfo) {
-        boolean result = redisService.setIfAbsent(String.valueOf(userInfo.getId()), JsonUtil.stringify(userInfo), 30, TimeUnit.SECONDS);
+    @CachePut(value = Constants.CACHE_USER, key = "#result.id")
+    public UserInfo saveData(UserInfo userInfo) {
+        boolean result = redisService.setIfAbsent(String.valueOf(userInfo.getId()), userInfo, 60, TimeUnit.SECONDS);
         if (result) {
             userInfoMapper.insert(userInfo);
         }
+        return userInfo;
     }
 
     /**
      * 数据不存在是触发 CacheLoader, 数据存在走缓存
      */
     @Override
-    @Cacheable(value = Constants.CACHE_USER, key = "#id", cacheManager = Constants.CAFFEINE)
+    @Cacheable(value = Constants.CACHE_USER, key = "#id")
     public UserInfo selectById(Integer id) {
         return userInfoMapper.selectById(id);
     }

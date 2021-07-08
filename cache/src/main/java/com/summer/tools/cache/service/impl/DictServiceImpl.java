@@ -22,30 +22,20 @@ public class DictServiceImpl implements IDictService {
     @Resource
     private IDictMapper dictMapper;
 
-    @Resource(name = Constants.CAFFEINE)
-    private CacheManager cacheManager;
-
     public void saveData(Dict dict) {
         dictMapper.insert(dict);
     }
 
     @Override
-    @Cacheable(value = Constants.CACHE_DICT, key = "#id", cacheManager = Constants.REDIS)
+    @Cacheable(value = Constants.CACHE_DICT, key = "#id")
     public Dict selectById(Integer id) {
         return dictMapper.selectById(id);
     }
 
     @Override
     @SuppressWarnings("unchecked")
+    @Cacheable(value = Constants.CACHE_DICT, key = "#id")
     public List<Dict> selectList(String type) {
-
-        // 缓存未启用就读库
-        try {
-            // 字典内容添加到本地缓存,每次都会触发 CacheLoader
-            return (List<Dict>) Objects.requireNonNull(Objects.requireNonNull(cacheManager.getCache(CacheType.DICT.name())).get(type)).get();
-
-        } catch (NoSuchBeanDefinitionException ex) {
-            return dictMapper.selectList(new QueryWrapper<Dict>().eq(ObjectUtils.isNotEmpty(type),"type", type));
-        }
+        return dictMapper.selectList(new QueryWrapper<Dict>().eq(ObjectUtils.isNotEmpty(type),"type", type));
     }
 }

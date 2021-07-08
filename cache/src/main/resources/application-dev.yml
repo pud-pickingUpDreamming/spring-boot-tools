@@ -29,13 +29,8 @@ spring:
 #        refresh:
 #          period: 5
 #          adaptive: true
-
-
-
-cache:
-  redisEnable: true
-  caffeineEnable: true
-
+  cache:
+    type: caffeine
 
 # mybatis 配置
 mybatis-plus:

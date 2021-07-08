@@ -22,10 +22,9 @@ public class UserController {
     private IUserInfoService userInfoService ;
     @PostMapping
     @ApiOperation("添加用户")
-    public ResponseResult<?> saveData (@RequestBody UserInfo userInfo){
+    public ResponseResult<UserInfo> saveData (@RequestBody UserInfo userInfo){
         userInfo.setCreateTime(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()));
-        userInfoService.saveData(userInfo);
-        return ResponseResult.SUCCESS;
+        return ResponseResult.success(userInfoService.saveData(userInfo));
     }
     @GetMapping("/{id}")
     @ApiOperation("查询用户")
