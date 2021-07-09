@@ -1,6 +1,8 @@
 package com.summer.tools.cache.service.impl;
 
 import com.summer.tools.cache.constant.Constants;
+import com.summer.tools.cache.lock.RedisLock;
+import com.summer.tools.cache.lock.RedissonDistributedLocker;
 import com.summer.tools.cache.orm.dao.IUserInfoMapper;
 import com.summer.tools.cache.orm.model.UserInfo;
 import com.summer.tools.cache.service.IUserInfoService;
@@ -43,6 +45,15 @@ public class UserInfoServiceImpl implements IUserInfoService {
 
     @Override
     public List<UserInfo> selectList() {
-        return userInfoMapper.selectList();
+        List<UserInfo> userInfos;
+        if (RedisLock.tryLock("123", 180)) {
+            userInfos = userInfoMapper.selectList();
+        } else {
+            RedissonDistributedLocker.lock("456", 180);
+            userInfos = userInfoMapper.selectList();
+            RedissonDistributedLocker.unlock("456");
+            RedisLock.unlock("123");
+        }
+        return userInfos;
     }
 }

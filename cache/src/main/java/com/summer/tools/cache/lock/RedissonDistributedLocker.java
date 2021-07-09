@@ -22,9 +22,9 @@ public class RedissonDistributedLocker {
         return lock;
     }
 
-    public static RLock lock(String lockKey, TimeUnit unit ,int timeout) {
+    public static RLock lock(String lockKey, TimeUnit unit ,int leaseTime) {
         RLock lock = redissonClient.getLock(lockKey);
-        lock.lock(timeout, unit);
+        lock.lock(leaseTime, unit);
         return lock;
     }
 

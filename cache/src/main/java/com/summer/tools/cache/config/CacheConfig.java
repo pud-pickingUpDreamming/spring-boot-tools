@@ -19,6 +19,7 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 
@@ -38,16 +39,22 @@ public class CacheConfig {
      * 默认jdk自带序列化, 可视化很差
      */
     @Bean
-    public RedisTemplate<Object, Object> redisTemplate() {
-        RedisTemplate<Object, Object> template = new RedisTemplate<>();
+    public RedisTemplate<String, Object> redisTemplate() {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setKeySerializer(new Jackson2JsonRedisSerializer<>(String.class));
-        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
         template.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(String.class));
-        template.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+        template.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
         template.setConnectionFactory(connectionFactory);
 
-        RedisLock.setRedisClient(template);
         return template;
+    }
+
+    @Bean
+    public StringRedisTemplate stringRedisTemplate() {
+        StringRedisTemplate stringRedisTemplate = new StringRedisTemplate(connectionFactory);
+        RedisLock.init(stringRedisTemplate);
+        return stringRedisTemplate;
     }
 
     /**
