@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author john.wang
- * @since 2021-06-30
+ * @since 2021-07-12
  */
 public interface PlatformTenantDatasourceMapper extends BaseMapper<PlatformTenantDatasource> {
 

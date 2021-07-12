@@ -3,10 +3,6 @@ package com.summer.tools.mybatisplus.orm.model;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.summer.tools.common.validation.Add;
-import com.summer.tools.common.validation.Edit;
-import com.summer.tools.common.validation.EnumValid;
-import com.summer.tools.mybatisplus.constant.SystemModuleEnum;
 import com.summer.tools.mybatisplus.orm.model.AbstractModel;
 import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -23,7 +19,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author john.wang
- * @since 2021-06-30
+ * @since 2021-07-12
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -42,8 +38,8 @@ public class PlatformTenantDatasource extends AbstractModel<PlatformTenantDataso
     private Integer tenantId;
 
     private String tenantName;
-    @EnumValid(clazz = SystemModuleEnum.class, message = "没有这个枚举值", groups = {Add.class, Edit.class})
-    private String module;
+
+    private String service;
 
 
     public static final String ID = "id";
@@ -54,7 +50,7 @@ public class PlatformTenantDatasource extends AbstractModel<PlatformTenantDataso
 
     public static final String TENANT_NAME = "tenant_name";
 
-    public static final String MODULE = "module";
+    public static final String SERVICE = "service";
 
     @Override
     protected Serializable pkVal() {

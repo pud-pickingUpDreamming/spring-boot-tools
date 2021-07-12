@@ -14,7 +14,7 @@
         <result column="datasource_id" property="datasourceId" />
         <result column="tenant_id" property="tenantId" />
         <result column="tenant_name" property="tenantName" />
-        <result column="module" property="module" />
+        <result column="service" property="service" />
     </resultMap>
 
 </mapper>
