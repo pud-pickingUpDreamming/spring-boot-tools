@@ -1,7 +1,7 @@
 server:
   tomcat:
     uri-encoding: UTF-8
-  port: 84
+  port: 88
   servlet:
     encoding:
       charset: UTF-8
@@ -11,5 +11,5 @@ spring:
   profiles:
     active: dev, common
   application:
-    name: dao
+    name: wechat
 

@@ -35,6 +35,8 @@
         <module>flowable</module>
         <module>flowable-all</module>
         <module>cache</module>
+        <module>mq</module>
+        <module>wechat</module>
     </modules>
 
     <properties>
@@ -63,6 +65,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.summer</groupId>
+                <artifactId>cache</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>

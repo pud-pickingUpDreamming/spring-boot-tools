@@ -1,0 +1,43 @@
+logging:
+  config: classpath:logback.xml
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: ru.yandex.clickhouse.ClickHouseDriver
+    url: jdbc:clickhouse://1.15.132.121:7005/demo
+
+  redis:
+    host: 175.24.121.139
+    port: 7000
+    password: admin
+    timeout: 60
+    lettuce:
+      pool:
+        # redis单线程处理指令, 最大活跃线程数与内核线程数据保持一致
+        max-active: 2
+
+wechat:
+  corpId: ""
+  corpSecret: ""
+
+
+# mybatis 配置
+mybatis-plus:
+  mapperLocations: classpath:/mapper/*.xml
+  typeAliasesPackage: com.springboot.wechat.orm.model
+  global-config:
+    db-config:
+      # 主键类型
+      idType: AUTO
+      # 增删改字段策略
+      insertStrategy: NOT_NULL
+      updateStrategy: NOT_NULL
+      # 表名是否使用驼峰转下划线命名,只对表名生效
+      tableUnderline: true
+      # 大写命名,对表名和字段名均生效
+      capitalMode: false
+      #逻辑删除配置
+      logicDeleteField: is_del
+      logicDeleteValue: 1
+      logicNotDeleteValue: 0

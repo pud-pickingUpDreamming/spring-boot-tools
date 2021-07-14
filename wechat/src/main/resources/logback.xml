@@ -3,10 +3,10 @@
     <jmxConfigurator/>
     <property name = "logPath" value = "D:\\logs\\logs"/>
     <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${logPath}/mq.log</File>
+        <File>${logPath}/wechat.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>
-                ${logPath}/mq/mq-%d{yyyyMMdd}.log.%i
+                ${logPath}/wechat/wechat-%d{yyyyMMdd}.log.%i
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>500MB</maxFileSize>
@@ -24,10 +24,10 @@
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>ERROR</level>
         </filter>
-        <File>${logPath}/mq-error.log</File>
+        <File>${logPath}/wechat-error.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>
-                ${logPath}/mq/mq-error-%d{yyyyMMdd}.log.%i
+                ${logPath}/wechat/wechat-error-%d{yyyyMMdd}.log.%i
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>500MB</maxFileSize>
@@ -49,9 +49,9 @@
         </layout>
     </appender>
 
-    <logger name="com.summer.tools.mq" level="debug"/>
+    <logger name="com.summer.tools.wechat" level="debug"/>
     <root level="INFO">
-        <appender-ref ref="console" />
+<!--        <appender-ref ref="console" />-->
         <appender-ref ref="INFO_FILE" />
         <appender-ref ref="ERROR_FILE" />
     </root>
