@@ -313,7 +313,7 @@ CREATE TABLE public.summer_platform_tenant_datasource (
 	datasource_id int4 NULL,
 	tenant_id int4 NULL,
 	"tenant_name" varchar(20) NULL DEFAULT 'public'::character varying,
-	"module" varchar(20) NULL DEFAULT 'public'::character varying,
+	"service" varchar(20) NULL DEFAULT 'public'::character varying,
 	"version" int4 NULL DEFAULT 0,
 	is_del int2 NULL DEFAULT 0,
 	creator_id int4 NULL,
