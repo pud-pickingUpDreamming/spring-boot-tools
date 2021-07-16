@@ -61,7 +61,7 @@ CREATE TABLE public.summer_platform_user (
 	"password" varchar(255) NULL DEFAULT NULL::character varying,
 	last_login_time varchar(30) NULL DEFAULT NULL::character varying,
 	login_error_count int4 NULL,
-	tenant_ids _int4 NULL,
+	tenant_id int4 NULL,
 	user_type varchar(255) NULL DEFAULT NULL::character varying,
 	status varchar(2) NULL DEFAULT NULL::character varying,
 	profile_photo varchar(50) NULL,
@@ -292,8 +292,8 @@ COMMENT ON COLUMN public.summer_sys_user_department.version IS '乐观锁版本�
 DROP TABLE if exists public.summer_sys_user_role;
 CREATE TABLE public.summer_sys_user_role (
 	id serial,
-	user_id int8 NULL,
-	role_id int8 NULL,
+	user_id int4 NULL,
+	role_id int4 NULL,
 	"version" int4 NULL DEFAULT 0,
 	is_del int2 NULL DEFAULT 0,
 	creator_id int4 NULL,
