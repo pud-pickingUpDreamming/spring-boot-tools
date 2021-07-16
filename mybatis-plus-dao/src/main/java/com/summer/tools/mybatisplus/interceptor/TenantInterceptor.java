@@ -1,10 +1,13 @@
 package com.summer.tools.mybatisplus.interceptor;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.summer.tools.common.constants.CommonConstants;
+import com.summer.tools.mybatisplus.config.DataSourceProvider;
 import com.summer.tools.mybatisplus.constant.Constants;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -18,6 +21,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.Map;
 
 /**
  * 基于mybatis-plus的多租户切面
@@ -31,6 +35,8 @@ public class TenantInterceptor {
 
     @Resource
     private HttpServletRequest request;
+    @Resource
+    private DataSourceProvider dataSourceProvider;
 
     @Value("${tenant.service}")
     private String service;
@@ -46,6 +52,12 @@ public class TenantInterceptor {
     public Object tenantInterceptor(ProceedingJoinPoint pjp) throws Throwable {
 
         String tenant = request.getHeader(CommonConstants.TENANT);
+        Map<String, DataSourceProperty> dataSourcePropertyMap = this.dataSourceProvider.getDataSourcePropertiesMap();
+
+        // 如果请求头没有传租户信息或者没有没有配置多数据源,使用默认数据源
+        if(StringUtils.isBlank(tenant) || dataSourcePropertyMap.size() == 0) {
+            return proxyMethodRunning(pjp);
+        }
 
         // 获取被请求的方法
         MethodSignature signature = (MethodSignature)pjp.getSignature();

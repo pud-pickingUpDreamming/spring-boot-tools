@@ -58,4 +58,8 @@ public class DataSourceProvider extends AbstractDataSourceProvider {
 
 		return this.createDataSourceMap(this.dataSourcePropertiesMap);
 	}
+
+	public Map<String, DataSourceProperty> getDataSourcePropertiesMap() {
+		return this.dataSourcePropertiesMap;
+	}
 }
