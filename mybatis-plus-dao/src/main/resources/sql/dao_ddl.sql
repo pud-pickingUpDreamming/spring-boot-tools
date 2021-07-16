@@ -84,7 +84,7 @@ COMMENT ON COLUMN public.summer_platform_user.username IS '用户名';
 COMMENT ON COLUMN public.summer_platform_user.password IS '密码';
 COMMENT ON COLUMN public.summer_platform_user.last_login_time IS '上次登录时间';
 COMMENT ON COLUMN public.summer_platform_user.login_error_count IS '登录错误次数';
-COMMENT ON COLUMN public.summer_platform_user.tenant_ids IS '拥有的租户';
+COMMENT ON COLUMN public.summer_platform_user.tenant_id IS '拥有的租户';
 COMMENT ON COLUMN public.summer_platform_user.user_type IS '用户类型';
 COMMENT ON COLUMN public.summer_platform_user.status IS '状态';
 COMMENT ON COLUMN public.summer_platform_user.profile_photo IS '用户头像';
