@@ -61,6 +61,7 @@
         <pgdriver.version>42.1.4</pgdriver.version>
         <velocity.version>2.2</velocity.version>
         <redisson.version>3.16.0</redisson.version>
+        <security.oauth2.version>2.5.3</security.oauth2.version>
     </properties>
 
     <dependencyManagement>
@@ -69,6 +70,12 @@
                 <groupId>com.summer</groupId>
                 <artifactId>cache</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-oauth2-client</artifactId>
+                <version>${security.oauth2.version}</version>
             </dependency>
 
             <dependency>
