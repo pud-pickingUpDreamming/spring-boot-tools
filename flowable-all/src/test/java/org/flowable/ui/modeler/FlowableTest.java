@@ -34,13 +34,19 @@ public class FlowableTest {
     @Resource
     private TaskService taskService;
 
-    private static String PROCESS_INSTANCE_ID = "d8249690-bd4d-11eb-86cd-f85971bf9de7";
+    private static String PROCESS_INSTANCE_ID = "c60e18e0-f5cf-11eb-bc3f-f85971bf9de7";
     private static final int MONEY = 6000;
 
     @Test
     public void deployExcludeGatewayFlow() {
         // 任务完成监听事件
         FlowableListener createListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.TASK_CREATE);
+        FlowableListener assignListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.TASK_ASSIGN);
+        FlowableListener completeListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.TASK_COMPLETE);
+        FlowableListener deleteListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.TASK_DELETE);
+        FlowableListener startListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.SEQUENCE_TASK_START);
+        FlowableListener stopListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.SEQUENCE_TASK_END);
+        FlowableListener takeListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.SEQUENCE_TASK_TAKE);
 
         // 构造元素
         //开始事件
@@ -51,7 +57,12 @@ public class FlowableTest {
         employee.setId("employee_work").setCategory("employee")
                 .setAssignee("${taskUser}").setCandidateUsers(Arrays.asList("tom","tom1")).setName("申请人任务-填写表单");
         UserTask employeeTask = FlowElementBuilder.userTask(employee);
-        employeeTask.setTaskListeners(Collections.singletonList(createListener));
+        List<FlowableListener> taskListeners = new ArrayList<>();
+        taskListeners.add(createListener);
+        taskListeners.add(assignListener);
+        taskListeners.add(completeListener);
+        taskListeners.add(deleteListener);
+        employeeTask.setTaskListeners(taskListeners);
 
         // 审批流程决策(排他网关),金额小于5000走主管审批,金额大于5000走老板审批
         FlowableElement costGateway = new FlowableElement().setId("cost_").setName("exclusive_cost");
@@ -83,6 +94,12 @@ public class FlowableTest {
         SequenceFlow toCostGateway = new SequenceFlow(employeeTask.getId(), costGateway.getId());
         SequenceFlow toDirectorFlow = new SequenceFlow(costGateway.getId(), directorTask.getId());
         toDirectorFlow.setConditionExpression("${money < 5000}");
+        List<FlowableListener> executionListeners = new ArrayList<>();
+        executionListeners.add(startListener);
+        executionListeners.add(stopListener);
+        executionListeners.add(takeListener);
+        toDirectorFlow.setExecutionListeners(executionListeners);
+
         SequenceFlow toBossFlow = new SequenceFlow(costGateway.getId(), bossTask.getId());
         toBossFlow.setConditionExpression("${money >= 5000}");
         SequenceFlow directorAgreeFlow = new SequenceFlow(directorTask.getId(), employeeNoticeTask.getId());
@@ -99,8 +116,8 @@ public class FlowableTest {
 
         // 构造流程
         Process process = new Process();
-        process.setId("ExpenseApproveExclude");
-        process.setName("排他网关报销审批流程");
+        process.setId("ExpenseApproveExcludeListener");
+        process.setName("排他网关报销审批流程-listener");
         process.addFlowElement(startEvent);
         process.addFlowElement(employeeTask);
         process.addFlowElement(cost);
@@ -134,7 +151,7 @@ public class FlowableTest {
         byte[] convertToXML = bpmnXMLConverter.convertToXML(bpmnModel);
         String xmlData = new String(convertToXML);
         System.out.println(xmlData);
-        Deployment deploy = repositoryService.createDeployment().addString("排他网关报销审批流程.bpmn", xmlData).name("排他网关报销审批流程").deploy();
+        Deployment deploy = repositoryService.createDeployment().addString("排他网关报销审批流程-listener.bpmn", xmlData).name("排他网关报销审批流程(监听器)").deploy();
         System.out.println("部署id :" + deploy.getId());
     }
 
@@ -251,12 +268,11 @@ public class FlowableTest {
         Map<String, Object> params = new HashMap<>();
         params.put("taskUser", "tom");
         params.put("money", MONEY);
-        // ExpenseApproveExclude ExpenseApproveParallel
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ExpenseApproveParallel", params);
-        PROCESS_INSTANCE_ID = processInstance.getId();
+        // ExpenseApproveExclude ExpenseApproveParallel ExpenseApproveExcludeListener
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ExpenseApproveExcludeListener", params);
         log.info("提交成功.流程Id为: [{}]", processInstance.getId());
         // 提交表单任务
-        Task task = taskService.createTaskQuery().processInstanceId(PROCESS_INSTANCE_ID).active().singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
         if (task == null) {
             throw new RuntimeException("流程不存在");
         }
@@ -283,6 +299,7 @@ public class FlowableTest {
             } else {
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("approve", true);
+                map.put("outcome", "通过");
                 taskService.complete(f.getId(), map);
                 log.info(f.getTaskDefinitionKey());
                 log.info("processed ok!");

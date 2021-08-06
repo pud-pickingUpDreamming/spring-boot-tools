@@ -5,8 +5,14 @@ import org.flowable.ui.modeler.listeners.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public interface ProcessConstants {
+
+    /**
+     * 流程执行顺序监控
+     */
+    AtomicInteger SEQUENCE_MONITOR = new AtomicInteger(1);
 
     /**
      * 流程节点类型
