@@ -37,6 +37,8 @@
         <module>cache</module>
         <module>mq</module>
         <module>wechat</module>
+        <module>auth</module>
+        <module>test</module>
     </modules>
 
     <properties>

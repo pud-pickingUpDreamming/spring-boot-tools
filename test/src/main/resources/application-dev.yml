@@ -7,6 +7,24 @@ spring:
     driverClassName: ru.yandex.clickhouse.ClickHouseDriver
     url: jdbc:clickhouse://1.15.132.121:7005/demo
 
+# 需要开启 smtp
+  mail:
+    host: smtp.exmail.qq.com
+    port: 465
+  # 发件人的邮箱
+    username: everoffice@eversec.cn
+  # qq 邮箱的第三方授权码 并非个人密码
+    password: Redmine2
+  #开启ssl 否则 503 错误
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+          auth: true
+
+
+
 # mybatis 配置
 mybatis-plus:
   mapperLocations: classpath:/mapper/*.xml

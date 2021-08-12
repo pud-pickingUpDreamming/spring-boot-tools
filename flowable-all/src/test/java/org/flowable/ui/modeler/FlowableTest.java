@@ -35,7 +35,7 @@ public class FlowableTest {
     private TaskService taskService;
 
     private static String PROCESS_INSTANCE_ID = "c60e18e0-f5cf-11eb-bc3f-f85971bf9de7";
-    private static final int MONEY = 6000;
+    private static final int MONEY = 4000;
 
     @Test
     public void deployExcludeGatewayFlow() {

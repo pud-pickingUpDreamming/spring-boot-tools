@@ -12,7 +12,7 @@ public interface ProcessConstants {
     /**
      * 流程执行顺序监控
      */
-    AtomicInteger SEQUENCE_MONITOR = new AtomicInteger(1);
+    AtomicInteger SEQUENCE_MONITOR = new AtomicInteger(0);
 
     /**
      * 流程节点类型
