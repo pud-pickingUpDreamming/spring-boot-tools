@@ -12,9 +12,9 @@ spring:
     host: smtp.exmail.qq.com
     port: 465
   # 发件人的邮箱
-    username: everoffice@eversec.cn
+    username:
   # qq 邮箱的第三方授权码 并非个人密码
-    password: Redmine2
+    password:
   #开启ssl 否则 503 错误
     properties:
       mail:
