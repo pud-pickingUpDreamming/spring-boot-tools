@@ -17,11 +17,8 @@ spring:
     password:
   #开启ssl 否则 503 错误
     properties:
-      mail:
-        smtp:
-          ssl:
-            enable: true
-          auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.auth: true
 
 
 
