@@ -5,6 +5,7 @@ import com.summer.tools.flowable.orm.model.DeployModel;
 import com.summer.tools.flowable.service.IProcessTemplateService;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.engine.*;
+import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.image.ProcessDiagramGenerator;
@@ -27,6 +28,8 @@ public class FlowableController {
 
     @Resource
     private RuntimeService runtimeService;
+    @Resource
+    private HistoryService historyService;
     @Resource
     private TaskService taskService;
     @Resource
@@ -56,18 +59,15 @@ public class FlowableController {
      */
     @GetMapping(value = "/processDiagram")
     public void genProcessDiagram(String processId) throws Exception {
+        // 查询历史流程实例
+        HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processId).singleResult();
+        // 查询当前流程实列
         ProcessInstance pi = runtimeService.createProcessInstanceQuery().processInstanceId(processId).singleResult();
 
-        //流程走完的不显示图
-        if (pi == null) {
-            return;
-        }
-        Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
         //使用流程实例ID，查询正在执行的执行对象表，返回流程实例对象
-        String InstanceId = task.getProcessInstanceId();
         List<Execution> executions = runtimeService
                 .createExecutionQuery()
-                .processInstanceId(InstanceId)
+                .processInstanceId(processId)
                 .list();
 
         //得到正在执行的Activity的Id
@@ -78,8 +78,9 @@ public class FlowableController {
             activityIds.addAll(ids);
         }
 
-        //获取流程图
-        BpmnModel bpmnModel = repositoryService.getBpmnModel(pi.getProcessDefinitionId());
+        //获取流程图, 流程执行中高亮显示正在执行的节点,流程执行完了显示完整流程图
+        String processDefinitionId = pi != null ? pi.getProcessDefinitionId() : historicProcessInstance.getProcessDefinitionId();
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
         ProcessEngineConfiguration engConf = processEngine.getProcessEngineConfiguration();
         ProcessDiagramGenerator diagramGenerator = engConf.getProcessDiagramGenerator();
         byte[] buf = new byte[1024];

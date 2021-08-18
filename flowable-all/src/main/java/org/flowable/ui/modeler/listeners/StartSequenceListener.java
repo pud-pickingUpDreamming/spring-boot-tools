@@ -9,6 +9,7 @@ import org.flowable.ui.modeler.constants.ProcessConstants;
 import org.flowable.ui.modeler.utils.ApplicationContextUtil;
 
 /**
+ * 设置流程条件
  * 流程(sequenceFlow)开始监听器
  */
 @Slf4j
@@ -22,7 +23,11 @@ public class StartSequenceListener implements IElementListener {
 //        execution.setVariable();
         Task task = taskService.createTaskQuery().processInstanceId(execution.getCurrentActivityId()).active().singleResult();
 
-        log.info("步骤[{}]进入执行开始监听器:执行id[{}],事件名称[{}],流程定义id[{}]", ProcessConstants.SEQUENCE_MONITOR.addAndGet(1),
+        if(task != null && ProcessConstants.ProcessTaskTag.NOTICE.getValue().equals(task.getCategory())) {
+            taskService.complete(task.getId());
+        }
+
+        log.info("步骤[{}]进入执行开始监听器:执行id[{}],事件名称[{}],当前活动线条id[{}]", ProcessConstants.SEQUENCE_MONITOR.addAndGet(1),
                 execution.getId(), execution.getEventName(), execution.getCurrentActivityId());
     }
 }

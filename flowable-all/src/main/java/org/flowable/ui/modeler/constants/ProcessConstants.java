@@ -10,9 +10,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 public interface ProcessConstants {
 
     /**
-     * 流程执行顺序监控
+     * 流程监听顺序监控
      */
     AtomicInteger SEQUENCE_MONITOR = new AtomicInteger(0);
+
+    /**
+     * 任务标签, 用于控制节点需要执行哪些操作
+     */
+    @Getter
+    enum ProcessTaskTag implements ProcessConstants {
+        NOTICE("notice" , "通知"),
+        APPROVE("approve" , "审批"),
+        TASK("task" , "任务");
+
+        ProcessTaskTag(String value, String name){
+            this.value = value;
+            this.name = name;
+        }
+
+        private final String value;
+        private final String name;
+    }
 
     /**
      * 流程节点类型

@@ -28,4 +28,6 @@ public class FlowableElement {
     private String conditionExpression;
     private FlowNode sourceRef;
     private FlowNode targetRef;
+    // 事件相关()
+    private String timeCycle;
 }

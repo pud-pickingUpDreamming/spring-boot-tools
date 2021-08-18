@@ -25,12 +25,12 @@ public class TakeSequenceListener implements IElementListener {
         TaskService taskService = ApplicationContextUtil.getBean(TaskService.class);
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(execution.getProcessInstanceId()).list();
 
-        log.info("步骤[{}]进入执行取任务监听器:执行id[{}],事件名称[{}],流程定义id[{}]", ProcessConstants.SEQUENCE_MONITOR.addAndGet(1),
+        log.info("步骤[{}]进入执行取任务监听器:执行id[{}],事件名称[{}],当前活动线条id[{}]", ProcessConstants.SEQUENCE_MONITOR.addAndGet(1),
                 execution.getId(), execution.getEventName(), execution.getCurrentActivityId());
 
         tasks.forEach(f -> {
-            if ("hr".equals(f.getCategory())) {
-                taskService.complete(f.getId());
+            if (ProcessConstants.ProcessTaskTag.NOTICE.getValue().equals(f.getCategory())) {
+                log.info("");
             }
         });
     }

@@ -5,6 +5,7 @@ import org.flowable.bpmn.BpmnAutoLayout;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
+import org.flowable.common.engine.impl.identity.Authentication;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
@@ -34,9 +35,6 @@ public class FlowableTest {
     @Resource
     private TaskService taskService;
 
-    private static String PROCESS_INSTANCE_ID = "c60e18e0-f5cf-11eb-bc3f-f85971bf9de7";
-    private static final int MONEY = 4000;
-
     @Test
     public void deployExcludeGatewayFlow() {
         // 任务完成监听事件
@@ -48,21 +46,27 @@ public class FlowableTest {
         FlowableListener stopListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.SEQUENCE_TASK_END);
         FlowableListener takeListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.SEQUENCE_TASK_TAKE);
 
+        List<FlowableListener> allTaskListeners = new ArrayList<>();
+        allTaskListeners.add(createListener);
+        allTaskListeners.add(assignListener);
+        allTaskListeners.add(completeListener);
+        allTaskListeners.add(deleteListener);
+
+        List<FlowableListener> allExecutionListeners = new ArrayList<>();
+        allExecutionListeners.add(startListener);
+        allExecutionListeners.add(stopListener);
+        allExecutionListeners.add(takeListener);
+
         // 构造元素
         //开始事件
         FlowableElement start = new FlowableElement().setId("start").setName("开始");
         StartEvent startEvent = FlowElementBuilder.startEvent(start);
         //员工任务阶段
         FlowableElement employee = new FlowableElement();
-        employee.setId("employee_work").setCategory("employee")
+        employee.setId("employee_work").setCategory(ProcessConstants.ProcessTaskTag.TASK.getValue())
                 .setAssignee("${taskUser}").setCandidateUsers(Arrays.asList("tom","tom1")).setName("申请人任务-填写表单");
         UserTask employeeTask = FlowElementBuilder.userTask(employee);
-        List<FlowableListener> taskListeners = new ArrayList<>();
-        taskListeners.add(createListener);
-        taskListeners.add(assignListener);
-        taskListeners.add(completeListener);
-        taskListeners.add(deleteListener);
-        employeeTask.setTaskListeners(taskListeners);
+        employeeTask.setTaskListeners(allTaskListeners);
 
         // 审批流程决策(排他网关),金额小于5000走主管审批,金额大于5000走老板审批
         FlowableElement costGateway = new FlowableElement().setId("cost_").setName("exclusive_cost");
@@ -70,20 +74,23 @@ public class FlowableTest {
 
         //主管审批任务节点
         FlowableElement director = new FlowableElement();
-        director.setId("direct_audit").setCategory("director")
+        director.setId("direct_audit").setCategory(ProcessConstants.ProcessTaskTag.APPROVE.getValue())
                 .setAssignee("john").setCandidateUsers(Arrays.asList("john","john1")).setName("主管审批");
         UserTask directorTask = FlowElementBuilder.userTask(director);
+        directorTask.setTaskListeners(allTaskListeners);
         // boss审批任务节点
         FlowableElement boss = new FlowableElement();
-        boss.setId("boss_audit").setCategory("boss")
+        boss.setId("boss_audit").setCategory(ProcessConstants.ProcessTaskTag.APPROVE.getValue())
                 .setAssignee("alis").setCandidateUsers(Arrays.asList("alis", "alis1")).setName("老板审批");
         UserTask bossTask = FlowElementBuilder.userTask(boss);
+        bossTask.setTaskListeners(allTaskListeners);
 
         // 通知员工(知会)
         FlowableElement employeeNotice = new FlowableElement();
-        employeeNotice.setId("employee_notify").setCategory("employeeNotice")
+        employeeNotice.setId("employee_notify").setCategory(ProcessConstants.ProcessTaskTag.NOTICE.getValue())
                 .setAssignee("${taskUser}").setCandidateUsers(Arrays.asList("tom","tom1")).setName("通知员工");
         UserTask employeeNoticeTask = FlowElementBuilder.userTask(employeeNotice);
+        employeeNoticeTask.setTaskListeners(allTaskListeners);
 
         //结束事件
         FlowableElement end = new FlowableElement().setId("end").setName("结束");
@@ -92,26 +99,29 @@ public class FlowableTest {
         // 构造线条
         SequenceFlow startFlow = new SequenceFlow(startEvent.getId(), employeeTask.getId());
         SequenceFlow toCostGateway = new SequenceFlow(employeeTask.getId(), costGateway.getId());
+
         SequenceFlow toDirectorFlow = new SequenceFlow(costGateway.getId(), directorTask.getId());
         toDirectorFlow.setConditionExpression("${money < 5000}");
-        List<FlowableListener> executionListeners = new ArrayList<>();
-        executionListeners.add(startListener);
-        executionListeners.add(stopListener);
-        executionListeners.add(takeListener);
-        toDirectorFlow.setExecutionListeners(executionListeners);
+        toDirectorFlow.setExecutionListeners(allExecutionListeners);
 
         SequenceFlow toBossFlow = new SequenceFlow(costGateway.getId(), bossTask.getId());
         toBossFlow.setConditionExpression("${money >= 5000}");
+        toBossFlow.setExecutionListeners(allExecutionListeners);
         SequenceFlow directorAgreeFlow = new SequenceFlow(directorTask.getId(), employeeNoticeTask.getId());
         directorAgreeFlow.setConditionExpression("${approve}");
+        directorAgreeFlow.setExecutionListeners(allExecutionListeners);
+
         SequenceFlow directorDenyFlow = new SequenceFlow(directorTask.getId(), employeeTask.getId());
         directorDenyFlow.setConditionExpression("${!approve}");
+        directorDenyFlow.setExecutionListeners(allExecutionListeners);
         SequenceFlow bossAgreeFlow = new SequenceFlow(bossTask.getId(), employeeNoticeTask.getId());
         bossAgreeFlow.setConditionExpression("${approve}");
+        bossAgreeFlow.setExecutionListeners(allExecutionListeners);
         SequenceFlow bossDenyFlow = new SequenceFlow(bossTask.getId(), employeeTask.getId());
         bossDenyFlow.setConditionExpression("${!approve}");
+        bossDenyFlow.setExecutionListeners(allExecutionListeners);
         SequenceFlow toEndFlow = new SequenceFlow(employeeNoticeTask.getId(), endEvent.getId());
-
+        toEndFlow.setExecutionListeners(allExecutionListeners);
         cost.setOutgoingFlows(Arrays.asList(bossAgreeFlow, directorAgreeFlow));
 
         // 构造流程
@@ -167,7 +177,7 @@ public class FlowableTest {
         StartEvent startEvent = FlowElementBuilder.startEvent(start);
         //员工任务阶段
         FlowableElement employee = new FlowableElement();
-        employee.setId("employee_work").setCategory("employee")
+        employee.setId("employee_work").setCategory(ProcessConstants.ProcessTaskTag.TASK.getValue())
                 .setAssignee("${taskUser}").setCandidateUsers(Arrays.asList("tom","tom1")).setName("申请人任务-填写表单");
         UserTask employeeTask = FlowElementBuilder.userTask(employee);
         employeeTask.setTaskListeners(Collections.singletonList(completeListener));
@@ -178,20 +188,20 @@ public class FlowableTest {
 
         //主管审批任务节点
         FlowableElement director = new FlowableElement();
-        director.setId("direct_audit").setCategory("director")
+        director.setId("direct_audit").setCategory(ProcessConstants.ProcessTaskTag.APPROVE.getValue())
                 .setAssignee("john").setCandidateUsers(Arrays.asList("john","john1")).setName("主管审批");
         UserTask directorTask = FlowElementBuilder.userTask(director);
 
         // hr审批任务节点(知会)
         FlowableElement hr = new FlowableElement();
-        hr.setId("hr_notify").setCategory("hr")
+        hr.setId("hr_notify").setCategory(ProcessConstants.ProcessTaskTag.NOTICE.getValue())
                 .setAssignee("jack").setCandidateUsers(Arrays.asList("jack", "jack1")).setName("知会人事");
         UserTask hrTask = FlowElementBuilder.userTask(hr);
         hrTask.setTaskListeners(Collections.singletonList(createListener));
 
         // 通知员工(知会)
         FlowableElement employeeNotice = new FlowableElement();
-        employeeNotice.setId("employee_notify").setCategory("employeeNotice")
+        employeeNotice.setId("employee_notify").setCategory(ProcessConstants.ProcessTaskTag.NOTICE.getValue())
                 .setAssignee("${taskUser}").setCandidateUsers(Arrays.asList("tom","tom1")).setName("通知员工");
         UserTask employeeNoticeTask = FlowElementBuilder.userTask(employeeNotice);
 
@@ -264,10 +274,12 @@ public class FlowableTest {
     @Test
     public void startProcess() {
 
+        Authentication.setAuthenticatedUserId("tom");
+
         //启动流程
         Map<String, Object> params = new HashMap<>();
         params.put("taskUser", "tom");
-        params.put("money", MONEY);
+        params.put("money", 4000);
         // ExpenseApproveExclude ExpenseApproveParallel ExpenseApproveExcludeListener
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ExpenseApproveExcludeListener", params);
         log.info("提交成功.流程Id为: [{}]", processInstance.getId());
@@ -283,10 +295,11 @@ public class FlowableTest {
     }
 
     /**
-     * 通过审核
+     * 审批
      */
     @Test
     public void agree() {
+        String PROCESS_INSTANCE_ID = "2777396c-0019-11ec-89de-f85971bf9de7";
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(PROCESS_INSTANCE_ID).active().list();
 
         if (CollectionUtils.isEmpty(tasks)) {
@@ -305,19 +318,6 @@ public class FlowableTest {
                 log.info("processed ok!");
             }
         });
-    }
-
-    /**
-     * 员工确认
-     */
-    @Test
-    public void confirm() {
-        Task task = taskService.createTaskQuery().processInstanceId(PROCESS_INSTANCE_ID).active().singleResult();
-
-        if (task == null) {
-            throw new RuntimeException("流程不存在");
-        }
-        taskService.complete(task.getId());
     }
 
     static class FlowElementBuilder {
@@ -350,7 +350,7 @@ public class FlowableTest {
         }
 
         @SuppressWarnings("unused")
-        static FlowElement serviceTask(FlowableElement element) {
+        static ServiceTask serviceTask(FlowableElement element) {
             ServiceTask serviceTask = new ServiceTask();
             serviceTask.setId(element.getId());
             serviceTask.setName(element.getName());
@@ -387,6 +387,20 @@ public class FlowableTest {
             listener.setImplementationType(listenerType.getImplementationType());
             listener.setImplementation(listenerType.getListener().getClass().getName());
             return listener;
+        }
+
+        protected IntermediateCatchEvent catchEvent(FlowableElement element, List<FlowableListener> listeners) {
+            IntermediateCatchEvent intermediateCatchEvent = new IntermediateCatchEvent();
+            intermediateCatchEvent.setId(element.getId());
+            intermediateCatchEvent.setName(element.getName());
+            intermediateCatchEvent.setExecutionListeners(listeners);
+
+            List<EventDefinition> eventDefinitionList = new ArrayList<>();
+            TimerEventDefinition definition = new TimerEventDefinition();
+            definition.setTimeCycle(element.getTimeCycle());
+            eventDefinitionList.add(definition);
+            intermediateCatchEvent.setEventDefinitions(eventDefinitionList);
+            return intermediateCatchEvent;
         }
     }
 }
