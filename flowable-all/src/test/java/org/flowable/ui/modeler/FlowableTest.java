@@ -35,8 +35,10 @@ public class FlowableTest {
     @Resource
     private TaskService taskService;
 
-    @Test
-    public void deployExcludeGatewayFlow() {
+    private List<FlowableListener> allTaskListeners = new ArrayList<>();
+    private List<FlowableListener> allExecutionListeners = new ArrayList<>();
+
+    private void loadListeners() {
         // 任务完成监听事件
         FlowableListener createListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.TASK_CREATE);
         FlowableListener assignListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.TASK_ASSIGN);
@@ -46,16 +48,20 @@ public class FlowableTest {
         FlowableListener stopListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.SEQUENCE_TASK_END);
         FlowableListener takeListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.SEQUENCE_TASK_TAKE);
 
-        List<FlowableListener> allTaskListeners = new ArrayList<>();
         allTaskListeners.add(createListener);
         allTaskListeners.add(assignListener);
         allTaskListeners.add(completeListener);
         allTaskListeners.add(deleteListener);
 
-        List<FlowableListener> allExecutionListeners = new ArrayList<>();
         allExecutionListeners.add(startListener);
         allExecutionListeners.add(stopListener);
         allExecutionListeners.add(takeListener);
+    }
+
+    @Test
+    public void deployExcludeGatewayFlow() {
+
+        loadListeners();
 
         // 构造元素
         //开始事件
@@ -167,9 +173,8 @@ public class FlowableTest {
 
     @Test
     public void deployParallelGatewayFlow() {
-        // 任务完成监听事件
-        FlowableListener completeListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.TASK_COMPLETE);
-        FlowableListener createListener = FlowElementBuilder.listener(ProcessConstants.ProcessListenerTypeEnum.TASK_CREATE);
+
+        loadListeners();
 
         // 构造元素
         //开始事件
@@ -180,7 +185,7 @@ public class FlowableTest {
         employee.setId("employee_work").setCategory(ProcessConstants.ProcessTaskTag.TASK.getValue())
                 .setAssignee("${taskUser}").setCandidateUsers(Arrays.asList("tom","tom1")).setName("申请人任务-填写表单");
         UserTask employeeTask = FlowElementBuilder.userTask(employee);
-        employeeTask.setTaskListeners(Collections.singletonList(completeListener));
+        employeeTask.setTaskListeners(allTaskListeners);
 
         // 并行知会人事
         FlowableElement forkGateway = new FlowableElement().setId("fork_").setName("parallel_fork");
@@ -191,19 +196,21 @@ public class FlowableTest {
         director.setId("direct_audit").setCategory(ProcessConstants.ProcessTaskTag.APPROVE.getValue())
                 .setAssignee("john").setCandidateUsers(Arrays.asList("john","john1")).setName("主管审批");
         UserTask directorTask = FlowElementBuilder.userTask(director);
+        directorTask.setTaskListeners(allTaskListeners);
 
         // hr审批任务节点(知会)
         FlowableElement hr = new FlowableElement();
         hr.setId("hr_notify").setCategory(ProcessConstants.ProcessTaskTag.NOTICE.getValue())
                 .setAssignee("jack").setCandidateUsers(Arrays.asList("jack", "jack1")).setName("知会人事");
         UserTask hrTask = FlowElementBuilder.userTask(hr);
-        hrTask.setTaskListeners(Collections.singletonList(createListener));
+        hrTask.setTaskListeners(allTaskListeners);
 
         // 通知员工(知会)
         FlowableElement employeeNotice = new FlowableElement();
         employeeNotice.setId("employee_notify").setCategory(ProcessConstants.ProcessTaskTag.NOTICE.getValue())
                 .setAssignee("${taskUser}").setCandidateUsers(Arrays.asList("tom","tom1")).setName("通知员工");
         UserTask employeeNoticeTask = FlowElementBuilder.userTask(employeeNotice);
+        employeeNoticeTask.setTaskListeners(allTaskListeners);
 
         FlowableElement joinGateway = new FlowableElement().setId("join_").setName("parallel_join");
         ParallelGateway join = FlowElementBuilder.parallelGateway(joinGateway);
@@ -217,19 +224,26 @@ public class FlowableTest {
         SequenceFlow toForkFlow = new SequenceFlow(employeeTask.getId(), fork.getId());
         // 知会人事不需要条件
         SequenceFlow toHrFlow = new SequenceFlow(fork.getId(), hrTask.getId());
+        toHrFlow.setExecutionListeners(allExecutionListeners);
         SequenceFlow toDirectorFlow = new SequenceFlow(fork.getId(), directorTask.getId());
+        toDirectorFlow.setExecutionListeners(allExecutionListeners);
         SequenceFlow directorAgreeFlow = new SequenceFlow(directorTask.getId(), join.getId());
         directorAgreeFlow.setConditionExpression("${approve}");
+        directorAgreeFlow.setExecutionListeners(allExecutionListeners);
         SequenceFlow directorDenyFlow = new SequenceFlow(directorTask.getId(), employeeTask.getId());
         directorDenyFlow.setConditionExpression("${!approve}");
+        directorDenyFlow.setExecutionListeners(allExecutionListeners);
         SequenceFlow toJoinFlow = new SequenceFlow(hrTask.getId(), join.getId());
+        toJoinFlow.setExecutionListeners(allExecutionListeners);
         SequenceFlow toEmployeeNoticeFlow = new SequenceFlow(join.getId(), employeeNoticeTask.getId());
+        toEmployeeNoticeFlow.setExecutionListeners(allExecutionListeners);
         SequenceFlow toEndFlow = new SequenceFlow(employeeNoticeTask.getId(), endEvent.getId());
+        toEndFlow.setExecutionListeners(allExecutionListeners);
 
         // 构造流程
         Process process = new Process();
-        process.setId("ExpenseApproveParallel");
-        process.setName("并行网关报销审批流程");
+        process.setId("ExpenseApproveParallelListener");
+        process.setName("并行网关报销审批流程-listener");
         process.addFlowElement(startEvent);
         process.addFlowElement(employeeTask);
         process.addFlowElement(fork);
@@ -264,7 +278,7 @@ public class FlowableTest {
         byte[] convertToXML = bpmnXMLConverter.convertToXML(bpmnModel);
         String xmlData = new String(convertToXML);
         System.out.println(xmlData);
-        Deployment deploy = repositoryService.createDeployment().addString("并行网关报销审批流程.bpmn", xmlData).name("并行网关报销审批流程").deploy();
+        Deployment deploy = repositoryService.createDeployment().addString("并行网关报销审批流程-listener.bpmn", xmlData).name("并行网关报销审批流程(监听器)").deploy();
         System.out.println("部署id :" + deploy.getId());
     }
 
@@ -280,8 +294,8 @@ public class FlowableTest {
         Map<String, Object> params = new HashMap<>();
         params.put("taskUser", "tom");
         params.put("money", 4000);
-        // ExpenseApproveExclude ExpenseApproveParallel ExpenseApproveExcludeListener
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ExpenseApproveExcludeListener", params);
+        // ExpenseApproveExclude ExpenseApproveParallel ExpenseApproveExcludeListener ExpenseApproveParallelListener
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ExpenseApproveParallelListener", params);
         log.info("提交成功.流程Id为: [{}]", processInstance.getId());
         // 提交表单任务
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
@@ -299,7 +313,7 @@ public class FlowableTest {
      */
     @Test
     public void agree() {
-        String PROCESS_INSTANCE_ID = "2777396c-0019-11ec-89de-f85971bf9de7";
+        String PROCESS_INSTANCE_ID = "3d1a0eb8-0034-11ec-ae9d-00ff9d320381";
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(PROCESS_INSTANCE_ID).active().list();
 
         if (CollectionUtils.isEmpty(tasks)) {
