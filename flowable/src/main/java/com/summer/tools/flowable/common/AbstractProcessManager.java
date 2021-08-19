@@ -3,8 +3,9 @@ package com.summer.tools.flowable.common;
 import com.summer.tools.common.enums.ResponseCodeEnum;
 import com.summer.tools.common.utils.Assert;
 import com.summer.tools.common.utils.BeanUtil;
+import com.summer.tools.common.utils.JsonUtil;
 import com.summer.tools.flowable.constants.ProcessConstants;
-import com.summer.tools.flowable.orm.model.DeployModel;
+import com.summer.tools.flowable.VO.DeployModel;
 import com.summer.tools.flowable.orm.model.ProcessLine;
 import com.summer.tools.flowable.orm.model.ProcessNode;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.ProcessDefinition;
-import org.flowable.form.api.FormDefinition;
 import org.flowable.form.api.FormDeployment;
 import org.flowable.form.api.FormRepositoryService;
 import org.flowable.validation.ProcessValidator;
@@ -89,7 +89,7 @@ public abstract class AbstractProcessManager {
         // 4.如果有表单,部署表单
         if (!ObjectUtils.isEmpty(deployModel.getForm())) {
             FormDeployment formDeployment = this.formRepositoryService.createDeployment()
-                    .name(deployModel.getForm().getName()).addString(deployModel.getForm().getName(), deployModel.getForm().getContent())
+                    .name(deployModel.getForm().getName()).addString(deployModel.getForm().getName(), JsonUtil.stringify(deployModel.getForm()))
                     .parentDeploymentId(deployment.getId())
                     .deploy();
             // FormDefinition formDefinition = formRepositoryService.createFormDefinitionQuery().deploymentId(formDeployment.getId()).singleResult();

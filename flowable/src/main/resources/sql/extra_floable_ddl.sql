@@ -44,7 +44,7 @@ CREATE TABLE `process_node` (
   `implementation_type` varchar(100) DEFAULT NULL COMMENT '任务实现类型，默认class,针对ServiceTask',
   `implementation` varchar(100) DEFAULT NULL COMMENT '任务实现类，全限定java类名,针对ServiceTask',
   `assignee` varchar(100) DEFAULT NULL COMMENT '处理人，针对UserTask',
-  `candidateUsers` varchar(200) DEFAULT NULL COMMENT '候选人',
+  `candidate_users` varchar(200) DEFAULT NULL COMMENT '候选人',
   `listeners` varchar(100) DEFAULT NULL COMMENT '节点监听器',
   `lines` varchar(100) DEFAULT NULL COMMENT '节点关联线条',
   `cron` varchar(100) DEFAULT NULL COMMENT 'cron 表达式',

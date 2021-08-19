@@ -3,7 +3,7 @@ package com.summer.tools.flowable;
 import com.summer.tools.flowable.common.IdGenerator;
 import com.summer.tools.flowable.constants.ProcessConstants;
 import com.summer.tools.flowable.constants.TemplateConstants;
-import com.summer.tools.flowable.orm.model.DeployModel;
+import com.summer.tools.flowable.VO.DeployModel;
 import com.summer.tools.flowable.orm.model.ProcessLine;
 import com.summer.tools.flowable.orm.model.ProcessNode;
 import com.summer.tools.flowable.service.IProcessTemplateService;
