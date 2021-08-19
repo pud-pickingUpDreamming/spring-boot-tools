@@ -42,7 +42,8 @@ public interface ProcessConstants {
         USER_TASK(3, "userTask"),
         SERVICE_TASK(4, "serviceTask"),
         EXCLUSIVE_GATEWAY(5, "exclusiveGateway"),
-        PARALLEL_GATEWAY(6, "parallelGateway");
+        PARALLEL_GATEWAY(6, "parallelGateway"),
+        CATCH_EVENT(7, "catchEvent");
 
         private final int value;
         private final String name;

@@ -1,6 +1,6 @@
 package com.summer.tools.flowable.service;
 
-import com.summer.tools.flowable.orm.model.DeployModel;
+import com.summer.tools.flowable.VO.DeployModel;
 import org.flowable.engine.repository.ProcessDefinition;
 
 public interface IProcessTemplateService {
