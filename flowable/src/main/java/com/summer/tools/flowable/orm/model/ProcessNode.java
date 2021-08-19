@@ -38,6 +38,10 @@ public class ProcessNode extends Model<ProcessNode> {
      */
     private Integer type;
     /**
+     * 节点标签 approve:审批 notice 知会
+     */
+    private String category;
+    /**
      *  服务实现类型 class
      */
     private String implementationType;
@@ -50,6 +54,10 @@ public class ProcessNode extends Model<ProcessNode> {
      */
     private String assignee;
     /**
+     *  候选人
+     */
+    private String candidateUsers;
+    /**
      * 全限定类名,多个用","分割
      * 任务节点监听器
      */
@@ -59,6 +67,10 @@ public class ProcessNode extends Model<ProcessNode> {
      * 网关会对应多个线条
      */
     private String lines;
+    /**
+     * cron表达式
+     */
+    private String cron;
     /**
      * 节点高度
      */

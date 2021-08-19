@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public interface ProcessConstants {
 
@@ -22,6 +23,32 @@ public interface ProcessConstants {
         }
     }
 
+    /**
+     * 流程监听顺序监控
+     */
+    AtomicInteger SEQUENCE_MONITOR = new AtomicInteger(0);
+
+    /**
+     * 节点标签, 用于控制节点需要执行哪些操作
+     * NOTICE : 知会
+     * APPROVE : 审批
+     * TASK : 系统任务 需要绑定数据
+     */
+    @Getter
+    enum ProcessNodeTag implements ProcessConstants {
+        NOTICE("notice" , "通知"),
+        APPROVE("approve" , "审批"),
+        TASK("task" , "任务");
+
+        ProcessNodeTag(String value, String name){
+            this.value = value;
+            this.name = name;
+        }
+
+        private final String value;
+        private final String name;
+    }
+
     @Getter
     enum ProcessNodeTypeEnum implements ProcessConstants{
         START_NODE(1, "start"),
@@ -29,7 +56,8 @@ public interface ProcessConstants {
         USER_TASK(3, "userTask"),
         SERVICE_TASK(4, "serviceTask"),
         EXCLUSIVE_GATEWAY(5, "exclusiveGateway"),
-        PARALLEL_GATEWAY(6, "parallelGateway");
+        PARALLEL_GATEWAY(6, "parallelGateway"),
+        CATCH_EVENT(7, "catchEvent");
 
         private final int value;
         private final String name;

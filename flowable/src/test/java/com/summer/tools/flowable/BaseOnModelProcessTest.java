@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @SpringBootTest
@@ -22,15 +24,15 @@ public class BaseOnModelProcessTest extends AbstractControllerTest {
 
     @Test
     public void deployBaseOnModel() {
-        DeployModel model = Builder.buildDeployModel();
+        DeployModel model = Builder.buildExcludeGatewayDeployModel();
         this.flowService.deploy(model);
     }
 
-
     static class Builder {
-        static String ASSIGNEE = "john";
+        static String ASSIGNEE = "${username}";
+        static List<String> candidateUsers = Arrays.asList("tom", "keven", "john", "masha", "jack");
 
-        static DeployModel buildDeployModel() {
+        static DeployModel buildExcludeGatewayDeployModel() {
             String templateId = IdGenerator.generateId(TemplateConstants.IdPrefixEnum.TEMPLATE);
             String name = "报销流程";
             DeployModel model = new DeployModel().setTemplateId(templateId).setProcessName(name);
@@ -39,11 +41,12 @@ public class BaseOnModelProcessTest extends AbstractControllerTest {
             return model;
         }
 
-        static ProcessNode buildNode(String templateId, ProcessConstants.ProcessNodeTypeEnum type, int index) {
+        static ProcessNode buildNode(String templateId, ProcessConstants.ProcessNodeTypeEnum type, ProcessConstants.ProcessNodeTag tag, int index) {
             ProcessNode node = new ProcessNode()
                     .setId(IdGenerator.generateId(TemplateConstants.IdPrefixEnum.NODE))
                     .setName(type.getName() + index).setAssignee(ASSIGNEE)
                     .setTemplateId(templateId).setType(type.getValue())
+                    .setCategory(tag.getValue())
                     .setHeight(10).setWidth(10).setAxisX(10*index).setAxisY(10*index);
             if (type.equals(ProcessConstants.ProcessNodeTypeEnum.USER_TASK)) {
                 String listeners = ProcessConstants.ProcessListenerTypeEnum.TASK_CREATE.getType()
@@ -66,5 +69,7 @@ public class BaseOnModelProcessTest extends AbstractControllerTest {
             }
             return line;
         }
+
+
     }
 }

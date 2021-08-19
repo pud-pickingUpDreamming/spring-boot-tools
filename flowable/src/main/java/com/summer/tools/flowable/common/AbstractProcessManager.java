@@ -8,6 +8,7 @@ import com.summer.tools.flowable.orm.model.DeployModel;
 import com.summer.tools.flowable.orm.model.ProcessLine;
 import com.summer.tools.flowable.orm.model.ProcessNode;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.engine.ProcessEngine;
@@ -16,13 +17,18 @@ import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.ProcessDefinition;
+import org.flowable.form.api.FormDefinition;
+import org.flowable.form.api.FormDeployment;
+import org.flowable.form.api.FormRepositoryService;
 import org.flowable.validation.ProcessValidator;
 import org.flowable.validation.ProcessValidatorFactory;
 import org.flowable.validation.ValidationError;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -30,6 +36,8 @@ public abstract class AbstractProcessManager {
     protected static final String PROCESS_PREFIX = "process-";
     protected static final String PROCESS_POSTFIX = "-流程";
 
+    @Resource
+    private FormRepositoryService formRepositoryService;
     @Resource
     private RuntimeService runtimeService;
     @Resource
@@ -77,10 +85,21 @@ public abstract class AbstractProcessManager {
                 .name(deployModel.getProcessName() + PROCESS_POSTFIX)
                 .addBpmnModel(deployModel.getProcessName(), bpmnModel)
                 .deploy();
-        // 4. 获取流程定义对象
+
+        // 4.如果有表单,部署表单
+        if (!ObjectUtils.isEmpty(deployModel.getForm())) {
+            FormDeployment formDeployment = this.formRepositoryService.createDeployment()
+                    .name(deployModel.getForm().getName()).addString(deployModel.getForm().getName(), deployModel.getForm().getContent())
+                    .parentDeploymentId(deployment.getId())
+                    .deploy();
+            // FormDefinition formDefinition = formRepositoryService.createFormDefinitionQuery().deploymentId(formDeployment.getId()).singleResult();
+        }
+
+        // 5. 获取流程定义对象
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .deploymentId(deployment.getId()).singleResult();
         log.info("流程[{}]部署成功! 流程定义唯一标识:{}", deployModel.getProcessName(), processDefinition.getKey());
+
         // 5. 发布回调
         this.postDeploy(deployModel.getTemplateId(), processDefinition.getKey(), bpmnModel);
 
@@ -90,7 +109,7 @@ public abstract class AbstractProcessManager {
     private BpmnModel BpmnModelWrapper(DeployModel deployModel) {
         // 设置流程基本属性
         Process process = new Process();
-        process.setDocumentation(deployModel.getProcessName() + "流程");
+        process.setDocumentation(deployModel.getProcessName() + PROCESS_POSTFIX);
         process.setId(PROCESS_PREFIX + deployModel.getTemplateId());
         process.setName(deployModel.getProcessName());
 
@@ -133,6 +152,8 @@ public abstract class AbstractProcessManager {
                     break;
                 case PARALLEL_GATEWAY:
                     elements.add(FlowElementBuilder.parallelGateway(processNode));
+                case CATCH_EVENT:
+                    elements.add(FlowElementBuilder.catchEvent(processNode));
                     break;
                 default:
                     break;
@@ -157,15 +178,15 @@ public abstract class AbstractProcessManager {
         log.info("流程模板id: [{}], 流程定义唯一标识: [{}]", templateId, processDefinitionId);
     }
 
-    static class FlowElementBuilder {
-        static FlowElement startEvent(ProcessNode processNode) {
+    public static class FlowElementBuilder {
+        public static FlowElement startEvent(ProcessNode processNode) {
             StartEvent startEvent = new StartEvent();
             BeanUtil.copyProperties(processNode, startEvent, null);
             startEvent.setName(processNode.getName() + "_开始");
             return startEvent;
         }
 
-        static FlowElement endEvent(ProcessNode processNode) {
+        public static FlowElement endEvent(ProcessNode processNode) {
             EndEvent endEvent = new EndEvent();
             BeanUtil.copyProperties(processNode, endEvent, null);
             endEvent.setName(processNode.getName() + "_结束");
@@ -176,9 +197,12 @@ public abstract class AbstractProcessManager {
             return endEvent;
         }
 
-        static FlowElement userTask(ProcessNode processNode) {
+        public static FlowElement userTask(ProcessNode processNode) {
             UserTask userTask = new UserTask();
             BeanUtil.copyProperties(processNode, userTask, null);
+            if (StringUtils.isNotBlank(processNode.getCandidateUsers())) {
+                userTask.setCandidateGroups(Arrays.asList(processNode.getCandidateUsers().split(",")));
+            }
             if (processNode.getListenerList() != null) {
                 List<FlowableListener> listenerList = new ArrayList<>();
                 processNode.getListenerList().forEach(listener -> listenerList.add(FlowElementBuilder.listener(listener)));
@@ -187,13 +211,31 @@ public abstract class AbstractProcessManager {
             return userTask;
         }
 
-        static FlowElement serviceTask(ProcessNode processNode) {
+        public static FlowElement serviceTask(ProcessNode processNode) {
             ServiceTask serviceTask = new ServiceTask();
             BeanUtil.copyProperties(processNode, serviceTask, null);
             return serviceTask;
         }
 
-        static FlowElement exclusiveGateway(ProcessNode processNode) {
+        public static IntermediateCatchEvent catchEvent(ProcessNode processNode) {
+            IntermediateCatchEvent intermediateCatchEvent = new IntermediateCatchEvent();
+            intermediateCatchEvent.setId(processNode.getId());
+            intermediateCatchEvent.setName(processNode.getName());
+            if (processNode.getListenerList() != null) {
+                List<FlowableListener> listenerList = new ArrayList<>();
+                processNode.getListenerList().forEach(listener -> listenerList.add(FlowElementBuilder.listener(listener)));
+                intermediateCatchEvent.setExecutionListeners(listenerList);
+            }
+
+            List<EventDefinition> eventDefinitionList = new ArrayList<>();
+            TimerEventDefinition definition = new TimerEventDefinition();
+            definition.setTimeCycle(processNode.getCron());
+            eventDefinitionList.add(definition);
+            intermediateCatchEvent.setEventDefinitions(eventDefinitionList);
+            return intermediateCatchEvent;
+        }
+
+        public static FlowElement exclusiveGateway(ProcessNode processNode) {
             ExclusiveGateway exclusiveGateway = new ExclusiveGateway();
             BeanUtil.copyProperties(processNode, exclusiveGateway, null);
 
@@ -205,19 +247,19 @@ public abstract class AbstractProcessManager {
             return exclusiveGateway;
         }
 
-        static FlowElement parallelGateway(ProcessNode processNode) {
+        public static FlowElement parallelGateway(ProcessNode processNode) {
             ParallelGateway parallelGateway = new ParallelGateway();
             BeanUtil.copyProperties(processNode, parallelGateway, null);
             return parallelGateway;
         }
 
-        static SequenceFlow sequenceFlow(ProcessLine processLine) {
+        public static SequenceFlow sequenceFlow(ProcessLine processLine) {
             SequenceFlow sequenceFlow = new SequenceFlow();
             BeanUtil.copyProperties(processLine, sequenceFlow, null);
             return sequenceFlow;
         }
 
-        static FlowableListener listener(ProcessConstants.ProcessListenerTypeEnum listenerType) {
+        public static FlowableListener listener(ProcessConstants.ProcessListenerTypeEnum listenerType) {
             FlowableListener listener = new FlowableListener();
             listener.setEvent(listenerType.getType());
             listener.setImplementationType(listenerType.getImplementationType());

@@ -18,6 +18,7 @@ public class DeployModel {
      */
     private String templateId;
     private String processName;
+    private ProcessForm form;
     private List<ProcessNode> processNodes;
     private List<ProcessLine> processLines;
 }

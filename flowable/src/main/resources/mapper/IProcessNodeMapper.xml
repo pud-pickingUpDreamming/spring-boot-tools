@@ -5,9 +5,11 @@
         <result column="line_id" property="id"/>
         <result column="name" property="name"/>
         <result column="type" property="type"/>
+        <result column="category" property="category"/>
         <result column="implementation_type" property="implementationType"/>
         <result column="implementation" property="implementation"/>
         <result column="assignee" property="assignee"/>
+        <result column="candidate_users" property="candidateUsers"/>
         <result column="listeners" property="listeners"/>
         <result column="lines" property="lines"/>
         <result column="create_time" property="createTime"/>
